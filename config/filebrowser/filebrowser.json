@@ -1,0 +1,9 @@
+{
+  "port": 80,
+  "baseURL": "/browser",
+  "address": "",
+  "log": "stdout",
+  "database": "/config/database.db",
+  "root": "/files",
+  "password": "$2a$10$TnxCEJW6/vidfsNxrk.VKeXE2h22wdFMVBnP6ovSkiNwNO9dcfgWe"
+}

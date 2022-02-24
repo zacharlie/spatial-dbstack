@@ -1,0 +1,34 @@
+apiVersion: 1
+
+datasources:
+  - name: Database
+    type: postgres
+    access: proxy
+    orgId: 1
+    # uid: db_uid
+    url: db:5432
+    user: ${POSTGRES_USER}
+    database: analysis
+    allowUiUpdates: true
+    isDefault: false
+    # <map> fields that will be converted to json and stored in jsonData
+    jsonData:
+      sslmode: "require" # disable/require/verify-ca/verify-full
+      postgresVersion: 1300 # 903=9.3, 904=9.4, 905=9.5, 906=9.6, 1000=10
+      timescaledb: true
+    secureJsonData:
+      password: ${POSTGRES_PASS}
+    version: 1
+    editable: true
+  - name: Prometheus
+    type: prometheus
+    url: http://prometheus:9090/prometheus
+    access: proxy
+    isDefault: true
+    editable: true
+  - name: Loki
+    type: loki
+    url: http://loki:3100
+    access: proxy
+    isDefault: false
+    editable: true

@@ -1,0 +1,18 @@
+groups:
+  - name: rate-alerting
+    rules:
+      - alert: HighLogRate
+        expr: |
+          sum by (compose_service)
+            (rate({job="dockerlogs"}[1m]))
+            > 60
+        for: 1m
+        labels:
+            severity: warning
+            team: devops
+            category: logs
+        annotations:
+            title: "High LogRate Alert"
+            description: "something is logging a lot"
+            impact: "impact"
+            action: "action"

@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <title>DBStack</title>
+
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+      integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/js/bootstrap.min.js"
+      integrity="sha384-VHvPCCyXqtD5DqJeNxl2dtTyhF78xXNXdkwX1CZeRusQfRKp+tA7hAShOK/B/fQ2"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css"
+      integrity="sha384-ejwKkLla8gPP8t2u0eQyL0Q/4ItcnyveF505U0NIobD/SMsNyXrLti6CWaD0L52l"
+      crossorigin="anonymous"
+    />
+    <!-- <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/fontawesome.min.css"
+      integrity="sha384-jLKHWM3JRmfMU0A5x5AkjWkw/EYfGUAGagvnfryNV3F9VqM98XiIH7VBGVoxVSc7"
+      crossorigin="anonymous"
+    /> -->
+    <link
+      href="http://fonts.googleapis.com/css?family=Noto+Sans:400,300,700"
+      rel="stylesheet"
+      type="text/css"
+    />
+
+    <style>
+      @import url(http://fonts.googleapis.com/css?family=Noto+Sans:400,300,700);
+
+      body {
+        font-family: "Noto+Sans", sans-serif;
+      }
+
+      .gallery {
+        padding-bottom: 2rem;
+        padding-top: 2rem;
+      }
+
+      .gallery-heading {
+        margin-bottom: 2rem;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .gallery-heading h2 {
+        font-size: 2rem;
+      }
+
+      .gallery-readme {
+        color: #555555;
+        text-align: center;
+        font-style: italic;
+        font-size: 0.8em;
+      }
+
+      .gallery.cards-gallery h6 {
+        font-size: 0.95em;
+        font-weight: bold;
+      }
+
+      .gallery.cards-gallery .card {
+        transition: 0.5s ease;
+      }
+
+      .gallery.cards-gallery .card-hover-container {
+        position: relative;
+      }
+
+      .gallery.cards-gallery .card-hover-info {
+        opacity: 0;
+        background-color: rgba(0, 0, 255, 0.15);
+        padding: 10px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        color: white;
+        transition: 0.5s ease;
+        overflow: auto;
+      }
+
+      .gallery.cards-gallery .card-hover-info:hover {
+        opacity: 1;
+      }
+
+      .gallery.cards-gallery .card-hover-info-header {
+        margin-top: 1em;
+      }
+
+      .gallery.cards-gallery .card-hover-info-text {
+        font-size: 0.8em;
+      }
+
+      .gallery.cards-gallery .card .card-img-top {
+        width: 100%;
+        height: 10vw;
+        min-height: 100px;
+        transition: transform 1s ease;
+      }
+
+      .gallery.cards-gallery .card img {
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .gallery.cards-gallery .card .card-img-link {
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+        overflow: hidden;
+      }
+
+      .gallery.cards-gallery .card .icon-flex-box {
+        font-size: 3em;
+        font-weight: strong;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+      }
+
+      .gallery.cards-gallery .card .icon-flex-box .card-svg-icon {
+        width: 1em;
+        height: 1em;
+        margin-top: -1em;
+      }
+
+      .gallery.cards-gallery .card .icon-flex-box .card-svg-icon-img {
+        width: 100%;
+        height: 100%;
+      }
+
+      .gallery.cards-gallery .card-body {
+        text-align: center;
+        height: 10vw;
+        overflow: auto;
+        min-height: 120px;
+        max-height: 160px;
+      }
+
+      .gallery.cards-gallery .card-body p {
+        font-size: 0.8em;
+      }
+
+      .gallery.cards-gallery a {
+        color: #212529;
+      }
+
+      .gallery.cards-gallery .card {
+        margin-bottom: 2rem;
+        box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .gallery.cards-gallery a:hover {
+        text-decoration: none;
+      }
+
+      .gallery.cards-gallery .card .card-img-top:hover {
+        transform: scale(1.1);
+      }
+
+      .gallery .cards-gallery-hover:hover {
+        transform: translateY(-2px) scale(1.02);
+        box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.15) !important;
+      }
+
+      @media (min-width: 576px) {
+        .gallery .cards-gallery-hover:hover {
+          transform: translateY(-4px) scale(1.02);
+        }
+      }
+
+      @media (min-width: 992px) {
+        .gallery .cards-gallery-hover:hover {
+          transform: translateY(-6px) scale(1.02);
+        }
+      }
+
+      /*IE*/
+      @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+        .card-scrollbar {
+          /* ie scrollbar color properties */
+          scrollbar-base-color: #efefef;
+          scrollbar-face-color: #666666;
+          scrollbar-3dlight-color: #666666;
+          scrollbar-highlight-color: #666666;
+          scrollbar-track-color: #efefef;
+          scrollbar-arrow-color: #666666;
+          scrollbar-shadow-color: #666666;
+          scrollbar-dark-shadow-color: #666666;
+        }
+      }
+
+      /*Firefox*/
+      /*From version 64 - https://drafts.csswg.org/css-scrollbars-1/*/
+      .card-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: #666666 #efefef;
+      }
+
+      /*Chrome*/
+      .card-scrollbar::-webkit-scrollbar-track {
+        background-color: #efefef;
+        width: 4px;
+      }
+
+      .card-scrollbar::-webkit-scrollbar-thumb {
+        background-color: #666666;
+        border: 1px solid transparent;
+        background-clip: content-box;
+      }
+
+      .card-scrollbar::-webkit-scrollbar {
+        width: 8px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <section class="gallery cards-gallery">
+      <div class="container">
+        <div class="gallery-heading">
+          <h2>DB Stack</h2>
+        </div>
+        <div class="gallery-readme">
+          <p>Spatial Database Management Services</p>
+        </div>
+        <div class="row">
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card border-0 cards-gallery-hover">
+              <a class="card-img-link" href="/api">
+                <div
+                  style="background-image: radial-gradient(#f9e79f, #b7950b)"
+                  alt="Card Image"
+                  class="card-img-top"
+                >
+                  <div class="icon-flex-box" style="color: white">
+                    <i class="bi-megaphone"></i>
+                  </div>
+                </div>
+              </a>
+              <div class="card-body card-scrollbar">
+                <h6><a href="/api">OpenAPI Docs</a></h6>
+                <p class="text-muted card-text">
+                  Swagger UI endpoint for the REST API
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card border-0 cards-gallery-hover">
+              <a class="card-img-link" href="/rest">
+                <div
+                  style="background-image: radial-gradient(#85929e, #2e4053)"
+                  alt="Card Image"
+                  class="card-img-top"
+                >
+                  <div class="icon-flex-box" style="color: white">
+                    <i class="bi-code-square"></i>
+                  </div>
+                </div>
+              </a>
+              <div class="card-body card-scrollbar">
+                <h6><a href="/rest">API</a></h6>
+                <p class="text-muted card-text">
+                  Service API, powered by PostgREST
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card border-0 cards-gallery-hover">
+              <a class="card-img-link" href="/uptime">
+                <div
+                  style="background-image: radial-gradient(#7dcea0, #1e8449)"
+                  alt="Card Image"
+                  class="card-img-top"
+                >
+                  <div class="icon-flex-box" style="color: white">
+                    <i class="bi-speedometer"></i>
+                  </div>
+                </div>
+              </a>
+              <div class="card-body card-scrollbar">
+                <h6><a href="/uptime">Uptime Monitor</a></h6>
+                <p class="text-muted card-text">
+                  Service health dashboard powered by Uptime Kuma
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card border-0 cards-gallery-hover">
+              <a class="card-img-link" href="/admin">
+                <div
+                  style="background-image: radial-gradient(#7fb3d5, #1f618d)"
+                  alt="Card Image"
+                  class="card-img-top"
+                >
+                  <div class="icon-flex-box" style="color: white">
+                    <i class="bi-server"></i>
+                  </div>
+                </div>
+              </a>
+              <div class="card-body card-scrollbar">
+                <h6><a href="/admin">Admin</a></h6>
+                <p class="text-muted card-text">
+                  Access the database via web ui, while pgadmin connects over
+                  the internal docker network
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card border-0 cards-gallery-hover">
+              <a class="card-img-link" href="/web/web/">
+                <div
+                  style="background-image: radial-gradient(#d7bde2, #884ea0)"
+                  alt="Card Image"
+                  class="card-img-top"
+                >
+                  <div class="icon-flex-box" style="color: white">
+                    <i class="bi-globe"></i>
+                  </div>
+                </div>
+              </a>
+              <div class="card-body card-scrollbar">
+                <h6><a href="/web">Web</a></h6>
+                <p class="text-muted card-text">
+                  Because "web" is way easier to type than pg_featureserv
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card border-0 cards-gallery-hover">
+              <a class="card-img-link" href="/tiles/tiles/">
+                <div
+                  style="background-image: radial-gradient(#a3e4d7, #17a589)"
+                  alt="Card Image"
+                  class="card-img-top"
+                >
+                  <div class="icon-flex-box" style="color: white">
+                    <i class="bi-stickies"></i>
+                  </div>
+                </div>
+              </a>
+              <div class="card-body card-scrollbar">
+                <h6><a href="/tiles/tiles">Tiles</a></h6>
+                <p class="text-muted card-text">
+                  Vector tiles from pg_tileserv
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card border-0 cards-gallery-hover">
+              <a class="card-img-link" href="/grafana">
+                <div
+                  style="background-image: radial-gradient(#ccd1d1, #707b7c)"
+                  alt="Card Image"
+                  class="card-img-top"
+                >
+                  <div class="icon-flex-box" style="color: white">
+                    <i class="bi-pie-chart-fill"></i>
+                  </div>
+                </div>
+              </a>
+              <div class="card-body card-scrollbar">
+                <h6><a href="/grafana">Grafana</a></h6>
+                <p class="text-muted card-text">
+                  Monitoring, dashboarding, and system logs
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card border-0 cards-gallery-hover">
+              <a class="card-img-link" href="/prometheus/graph">
+                <div
+                  style="background-image: radial-gradient(#e6b0aa, #a93226)"
+                  alt="Card Image"
+                  class="card-img-top"
+                >
+                  <div class="icon-flex-box" style="color: white">
+                    <i class="bi-binoculars-fill"></i>
+                  </div>
+                </div>
+              </a>
+              <div class="card-body card-scrollbar">
+                <h6><a href="/prometheus/graph">Prometheus</a></h6>
+                <p class="text-muted card-text">
+                  Monitoring and metrics endpoint
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card border-0 cards-gallery-hover">
+              <a class="card-img-link" href="/browser">
+                <div
+                  style="background-image: radial-gradient(#00b5df, #1c478d)"
+                  alt="Card Image"
+                  class="card-img-top"
+                >
+                  <div class="icon-flex-box" style="color: white">
+                    <i class="bi-folder-fill"></i>
+                  </div>
+                </div>
+              </a>
+              <div class="card-body card-scrollbar">
+                <h6><a href="/browser">Filebrowser</a></h6>
+                <p class="text-muted card-text">Access server data</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card border-0 cards-gallery-hover">
+              <a class="card-img-link" href="/leaflet.html">
+                <div
+                  style="background-image: radial-gradient(#edbb99, #ba4a00)"
+                  alt="Card Image"
+                  class="card-img-top"
+                >
+                  <div class="icon-flex-box" style="color: white">
+                    <i class="bi-map-fill"></i>
+                  </div>
+                </div>
+              </a>
+              <div class="card-body card-scrollbar">
+                <h6><a href="/leaflet.html">Map</a></h6>
+                <p class="text-muted card-text">
+                  Example leaflet and vector tile webmap
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card border-0 cards-gallery-hover">
+              <a
+                class="card-img-link"
+                href="https://github.com/zacharlie/spatial-dbstack/"
+              >
+                <div
+                  style="background-image: radial-gradient(#cccccc, #333333)"
+                  alt="Card Image"
+                  class="card-img-top"
+                >
+                  <div class="icon-flex-box" style="color: white">
+                    <i class="bi-git"></i>
+                  </div>
+                </div>
+              </a>
+              <div class="card-body card-scrollbar">
+                <h6>
+                  <a href="https://github.com/zacharlie/spatial-dbstack/"
+                    >Repo</a
+                  >
+                </h6>
+                <p class="text-muted card-text">Check out the source code</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+            <div class="card border-0 cards-gallery-hover">
+              <a class="card-img-link" href="#">
+                <div
+                  style="background-image: radial-gradient(#f7f9f9, #d0d3d4)"
+                  alt="Card Image"
+                  class="card-img-top"
+                >
+                  <div class="icon-flex-box" style="color: #909497">
+                    <i class="bi-dash-circle"></i>
+                  </div>
+                </div>
+              </a>
+              <div class="card-body card-scrollbar">
+                <h6><a href="#">Template</a></h6>
+                <p class="text-muted card-text">
+                  Blank card to make replicating new ones easy
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="gallery-readme">
+          <p>
+            <a href="https://zacharlie.github.io/spatial-dbstack"
+              >View User Documentation</a
+            >
+          </p>
+        </div>
+      </div>
+    </section>
+  </body>
+</html>

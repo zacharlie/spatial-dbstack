@@ -1,0 +1,277 @@
+version: '3.9'
+
+# Issues:
+# https://github.com/docker/compose/issues/8756
+# https://github.com/grafana/loki/issues/2361
+# https://github.com/louislam/uptime-kuma/issues/147
+
+x-logging:
+  # docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
+  &loki-logging
+  driver: loki
+  options:
+    loki-url: "http://loki:3100/loki/api/v1/push"
+    mode: "non-blocking"
+
+x-json-logging:
+  &json-logging
+  driver: json-file
+  options:
+    max-size: 200m
+    max-file: '10'
+
+volumes:
+  log-data: null
+  postgis-data: null
+  db-backup: null
+  pg-admin-data: null
+  grafana-data: null
+  uptime-kuma-data: null
+
+services:
+  loki:
+    image: grafana/loki
+    command: -config.file=/etc/loki/local-config.yaml
+    expose:
+      - 3100
+    volumes:
+      - log-data:/var/log
+      - ./config/loki/loki-local-config.yaml:/etc/loki/local-config.yaml
+      - ./config/loki/rules:/loki/rules
+
+  db:
+    image: kartoza/postgis:${POSTGRES_MAJOR_VERSION}-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_RELEASE}
+    volumes:
+      - postgis-data:/var/lib/postgresql
+      - db-backup:/backups
+      - ./config/sql/database_setup.sh:/docker-entrypoint-initdb.d/database_setup.sh
+      - ./config/sql:/sql/
+      - ./config/geodata:/data
+      - ./config/db/pgtune.conf:/settings/extra.conf
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASS=${POSTGRES_PASS}
+      - ALLOW_IP_RANGE=${ALLOW_IP_RANGE}
+      - POSTGRES_MULTIPLE_EXTENSIONS=${POSTGRES_MULTIPLE_EXTENSIONS}
+      - FORCE_SSL=${FORCE_SSL}
+    # logging: *loki-logging
+    expose:
+      - 5432/tcp
+    # ports:
+    #   - ${POSTGRES_PORT}:5432
+    healthcheck:
+      test: "exit 0"
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+      # depends_on:
+      # - loki
+
+  db-backup:
+    image: kartoza/pg-backup:${POSTGRES_MAJOR_VERSION}.0
+    hostname: pg-backups
+    volumes:
+      - db-backup:/backups
+    environment:
+      - DUMPPREFIX=PG_db
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASS=${POSTGRES_PASS}
+      - POSTGRES_HOST=${POSTGRES_HOST}
+      - POSTGRES_PORT=5432
+    # logging: *loki-logging
+    depends_on:
+      # - loki
+      - db
+
+  pgadmin:
+    image: dpage/pgadmin4
+    volumes:
+      - pg-admin-data:/var/lib/pgadmin
+      - ${PWD}/config/db/pgadmin_servers.json:/pgadmin4/servers.json
+      - ${PWD}/config/db/pgpassfile:/config/pg
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=${PGADMIN_USER}
+      - PGADMIN_DEFAULT_PASSWORD=${PGADMIN_PASS}
+      - PGADMIN_LISTEN_PORT=80
+      - PGADMIN_SERVER_JSON_FILE=/pgadmin4/servers.json
+      # disable password resets
+      - PGADMIN_DISABLE_POSTFIX=TRUE
+    # logging: *loki-logging
+    expose:
+      - 80
+    healthcheck:
+      test: "exit 0"
+      interval: 1m30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    depends_on:
+      # - loki
+      - db
+
+  postgrest:
+    image: postgrest/postgrest
+    environment:
+      - PGRST_DB_URI=postgres://${PGRST_DB_USER}:${PGRST_DB_PASS}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=${SSL_MODE}
+      # Can be comma separated and https://postgrest.org/en/v8.0/api.html#multiple-schemas
+      - PGRST_DB_SCHEMAS=${PGRST_DB_SCHEMAS}
+      - PGRST_DB_ANON_ROLE=${PGRST_DB_USER}
+      - PGRST_OPENAPI_SERVER_PROXY_URI=${SERVER_URL}/rest
+      - PGRST_SERVER_PORT=${PGRST_SERVER_PORT}
+      # Number should be less than PostgreSQL max_connections
+      - PGRST_DB_POOL=50
+      - PGRST_DB_POOL_TIMEOUT=120
+      - PGRST_DB_MAX_ROWS=${PGRST_DB_MAX_ROWS}
+      # Values can be "crit","error","warn","info"
+      - PGRST_LOG_LEVEL=error
+    # logging: *loki-logging
+    expose:
+      - ${PGRST_SERVER_PORT}
+    depends_on:
+      # - loki
+      - db
+
+  swagger:
+    image: swaggerapi/swagger-ui
+    environment:
+      - API_URL=${SERVER_URL}/rest/
+      - BASE_URL=/api
+    # logging: *loki-logging
+    expose:
+      - 8080
+    depends_on:
+      # - loki
+      - db
+      - postgrest
+
+  web:
+    image: pramsey/pg_featureserv
+    command: --config /etc/pg_featureserv.toml
+    volumes:
+      - ./config/apis/pg_featureserv.toml:/etc/pg_featureserv.toml
+    environment:
+      - DATABASE_URL=postgresql://${PGRST_DB_USER}:${PGRST_DB_PASS}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=${SSL_MODE}
+    # logging: *loki-logging
+    expose:
+      - 9000
+    restart: unless-stopped
+    depends_on:
+      - db
+      - pgadmin
+      # - loki
+
+  tiles:
+    image: pramsey/pg_tileserv
+    command: --config /etc/pg_tileserv.toml
+    volumes:
+      - ./config/apis/pg_tileserv.toml:/etc/pg_tileserv.toml
+    environment:
+      - DATABASE_URL=postgresql://${PGRST_DB_USER}:${PGRST_DB_PASS}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=${SSL_MODE}
+    # logging: *loki-logging
+    expose:
+      - 7800
+    restart: unless-stopped
+    depends_on:
+      - db
+      - pgadmin
+      # - loki
+
+  grafana:
+    image: grafana/grafana-oss
+    environment:
+      # https://grafana.com/docs/grafana/latest/administration/configure-docker/
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+      - GF_PATHS_CONFIG=/etc/grafana/grafana.ini
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_ADMIN_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_ADMIN_PASS}
+      - POSTGRES_USER=${POSTGRES_USER} # used in provisioning files
+      - POSTGRES_PASS=${POSTGRES_PASS}
+      - SERVER_URL=${SERVER_URL} # used in config for proxy
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./config/grafana/:/etc/grafana/
+    # logging: *loki-logging
+    expose:
+      - 3000
+      # depends_on:
+      # - loki
+
+  promtail:
+    image: grafana/promtail
+    command: -config.file=/etc/promtail/promtail-config.yaml
+    volumes:
+      - log-data:/var/log
+      - ./config/prom/promtail-docker-config.yaml:/etc/promtail/promtail-config.yaml
+    # logging: *loki-logging
+    expose:
+      - 9080
+      # depends_on:
+      # - loki
+
+  prometheus:
+    image: prom/prometheus
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      #  still seems to redirect graph to root
+      # https://github.com/prometheus/prometheus/issues/1583
+      # - --web.external-url=${SERVER_URL}/prometheus/
+      - --web.route-prefix=/prometheus/
+    volumes:
+      - ./config/prom/prometheus.yml:/etc/prometheus/prometheus.yml
+    # logging: *loki-logging
+    expose:
+      - 9090
+      # depends_on:
+      # - loki
+
+  filebrowser:
+    image: filebrowser/filebrowser
+    volumes:
+      - ./config/filebrowser/filebrowser.json:/.filebrowser.json
+      - ./config/filebrowser/:/config
+      # filebrowser user will need permissions on specific folders
+      - ./config:/files/config
+    user: ${CURRENT_UID}
+    # logging: *loki-logging
+    expose:
+      - 80
+      # depends_on:
+      # - loki
+
+  monitor:
+    image: louislam/uptime-kuma
+    volumes:
+      - ./config/kuma:/app/data
+    # logging: *loki-logging
+    expose:
+      - 3001
+      # depends_on:
+      # - loki
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./config/nginx/sites-enabled:/etc/nginx/conf.d:ro
+      - ./config/nginx/webusers:/etc/nginx/.htpasswd:ro
+      - ./config/ssl/:/etc/nginx/ssl/
+      - ./config/www/:/usr/share/nginx/html/www/
+    # logging: *loki-logging
+    logging: *json-logging
+    restart: always
+    depends_on:
+      # - loki
+      - db
+      # - pgadmin
+      # - postgrest
+      # - filebrowser
+      # - swagger
+      # - grafana
+      # - prometheus
+      # - web
+      # - tiles
+      # - monitor
+    ports:
+      - 80:80
+      - 443:443
