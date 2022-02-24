@@ -44,6 +44,8 @@ Default Username-Password Combo:
 
 Change these please. Note that the uptime service stores the password in the database and will need to be reset from the UI.
 
+Filebrowser username default is admin.
+
 ## Services
 
 - nginx (proxy for all services, and enforces http basic auth by default)
@@ -53,7 +55,7 @@ Change these please. Note that the uptime service stores the password in the dat
 - Uptime Kuma (personal uptime robot)
 - pg_featureserv (OGC features API for everything in the publish schema)
 - pg_tileeserv (Vector tiles for everything in the publish schema)
-- Graphana (with prometheus and loki)
+- Grafana (with prometheus and loki)
 - Filebrowser (for file uploads and management)
 
 ## More services
