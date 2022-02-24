@@ -8,6 +8,7 @@ repo_url: https://github.com/zacharlie/spatial-dbstack
 edit_uri: "https://github.com/zacharlie/spatial-dbstack/blob/main/docsrc/"
 
 docs_dir: docsrc
+site_dir: docs
 
 # Copyright
 copyright: Copyfree Content
