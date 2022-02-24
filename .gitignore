@@ -1,0 +1,37 @@
+.env
+.ignore/
+*.ignore
+# prevent commits including ssl certs
+config/ssl/*.key
+config/ssl/*.crt
+config/ssl/*.pem
+config/ssl/*.cer
+config/ssl/*.der
+config/ssl/*.p7b
+config/ssl/*.p7c
+config/ssl/*.pfx
+config/ssl/*.p12
+# exclude appdata
+config/filebrowser/database.db
+config/kuma/kuma.db
+config/kuma/error.log
+# exclude geodata dir, include samples
+config/geodata/**
+!config/geodata/**/
+!config/geodata/sample_data.gpkg
+!config/geodata/ne_10m_admin_0_countries.cpg
+!config/geodata/ne_10m_admin_0_countries.dbf
+!config/geodata/ne_10m_admin_0_countries.prj
+!config/geodata/ne_10m_admin_0_countries.README.html
+!config/geodata/ne_10m_admin_0_countries.shp
+!config/geodata/ne_10m_admin_0_countries.shx
+!config/geodata/ne_10m_admin_0_countries.VERSION.txt
+!config/geodata/ne_10m_airports.README.html
+!config/geodata/ne_10m_airports.VERSION.txt
+!config/geodata/ne_10m_populated_places_simple.geojson
+!config/geodata/ne_10m_populated_places_simple.README.html
+!config/geodata/ne_10m_populated_places_simple.VERSION.txt
+!config/geodata/ne_10m_ports.README.html
+!config/geodata/ne_10m_ports.VERSION.txt
+!config/geodata/ne_10m_urban_areas.README.html
+!config/geodata/ne_10m_urban_areas.VERSION.txt
