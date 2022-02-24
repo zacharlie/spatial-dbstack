@@ -23,7 +23,8 @@ nav:
 
 # Configuration
 theme:
-  name: null
+  name: material
+  custom_dir: mkdocs/
 
   # Don't include MkDocs' JavaScript
   include_search_page: false
