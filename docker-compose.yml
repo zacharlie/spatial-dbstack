@@ -1,10 +1,5 @@
 version: '3.9'
 
-# Issues:
-# https://github.com/docker/compose/issues/8756
-# https://github.com/grafana/loki/issues/2361
-# https://github.com/louislam/uptime-kuma/issues/147
-
 x-logging:
   # docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
   &loki-logging

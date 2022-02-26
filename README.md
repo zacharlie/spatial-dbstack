@@ -32,6 +32,20 @@ PasswordAuthentication no
 
 `service ssh restart`
 
+## Known issues
+
+- https://github.com/docker/compose/issues/8756
+- https://github.com/grafana/loki/issues/2361
+- https://github.com/louislam/uptime-kuma/issues/147
+
+## Getting uptime Kuma Running
+
+Subpaths require the application of an unmerged wip PR:
+
+https://patch-diff.githubusercontent.com/raw/louislam/uptime-kuma/pull/1092.diff
+
+The uptime kuma repo includes dockerfiles, so modify it to copy and apply the diff inside the container and tag it appropriately and then point docker-compose to the correct container.
+
 ## Authorization
 
 For the nginx authorization system to work, an authorization file `config/nginx/webusers` contains user credentials, generated with htpasswd.
