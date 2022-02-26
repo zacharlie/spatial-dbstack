@@ -14,6 +14,7 @@ config/ssl/*.p12
 # exclude appdata
 config/filebrowser/database.db
 config/kuma/kuma.db
+config/kuma/kuma.db*
 config/kuma/error.log
 # exclude geodata dir, include samples
 config/geodata/**
