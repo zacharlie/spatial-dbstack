@@ -2,6 +2,8 @@
 
 The Spatial DBStack is a simple docker-compose based stack for PostgreSQL with the PostGIS extension, that provides an enterprise-ready database solution with additional stack components for monitoring, administration, and data publishing OOTB.
 
+> **pre-alpha warning**: this will eat your homework
+
 It's optimized for utilization with spatial data by providing geodata APIS and a vector tile service, and is based on the [kartoza/docker-postgis](https://github.com/kartoza/docker-postgis) image.
 
 For the most part, dbstack will be used to refer to the project, but the repo name spatial-dbstack was used to explicitly outline it's intended purpose as a spatial datastore.
