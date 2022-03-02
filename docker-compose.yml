@@ -148,7 +148,7 @@ services:
       - ./config/apis/pg_featureserv.toml:/etc/pg_featureserv.toml
     environment:
       - DATABASE_URL=postgresql://${PGRST_DB_USER}:${PGRST_DB_PASS}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=${SSL_MODE}
-    # logging: *loki-logging
+      # logging: *loki-logging
     expose:
       - 9000
     restart: unless-stopped
@@ -164,7 +164,7 @@ services:
       - ./config/apis/pg_tileserv.toml:/etc/pg_tileserv.toml
     environment:
       - DATABASE_URL=postgresql://${PGRST_DB_USER}:${PGRST_DB_PASS}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=${SSL_MODE}
-    # logging: *loki-logging
+      # logging: *loki-logging
     expose:
       - 7800
     restart: unless-stopped
@@ -236,10 +236,16 @@ services:
       # - loki
 
   monitor:
-    image: louislam/uptime-kuma
+    # image: louislam/uptime-kuma
+    image: custom/uptime-kuma
     volumes:
       - ./config/kuma:/app/data
+    environment:
+      - UPTIME_KUMA_BASE_PATH=https://127.0.0.1/uptime/
+      - BASE_PATH=/uptime/
     # logging: *loki-logging
+    # ports:
+    #   - "3001:3001"
     expose:
       - 3001
       # depends_on:
@@ -255,18 +261,18 @@ services:
     # logging: *loki-logging
     logging: *json-logging
     restart: always
-    depends_on:
-      # - loki
-      - db
-      # - pgadmin
-      # - postgrest
-      # - filebrowser
-      # - swagger
-      # - grafana
-      # - prometheus
-      # - web
-      # - tiles
-      # - monitor
+    # depends_on:
+    # - loki
+    # - db
+    # - pgadmin
+    # - postgrest
+    # - filebrowser
+    # - swagger
+    # - grafana
+    # - prometheus
+    # - web
+    # - tiles
+    # - monitor
     ports:
       - 80:80
       - 443:443
