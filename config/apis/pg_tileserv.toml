@@ -41,10 +41,10 @@ HttpPort = 7800
 # Advertise URLs relative to this server name
 # default is to look this up from incoming request headers
 # UrlBase = "http://localhost/"
-
+UrlBase = "/tiles"
 # Optional path to add to the service base URL
 # If set, all routes will be prefixed with this path
-BasePath = "/tiles"
+BasePath = "/"
 
 # Resolution to quantize vector tiles to
 DefaultResolution = 4096

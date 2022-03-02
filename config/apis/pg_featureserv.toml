@@ -21,7 +21,7 @@ UrlBase = "/web"
 # (e.g. "/pg_featureserv", "/services/pg_featureserv", etc.)
 # Note: No trailing slash is necessary, pg_featureserv automatically
 # adds a trailing slash for you.
-BasePath = "/web"
+BasePath = "/"
 
 # String to return for Access-Control-Allow-Origin header
 CORSOrigins = "*"
