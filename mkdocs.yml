@@ -16,13 +16,16 @@ copyright: Copyfree Content
 nav:
   - Home: index.md
   - Quickstart:
-      - Service Information: start/service-information.md
       - Deployment: start/deployment.md
+      - Service Information: start/service-information.md
+  - FAQ: faq/faq.md
   - Architecture:
       - Design: architecture/design.md
   - Library:
       - Grafana Queries: library/grafana.md
       - Snippets: library/snippets.md
+  - Tutorials:
+      - QGIS: tutorials/qgis/index.md
 
 # Configuration
 theme:
@@ -55,20 +58,20 @@ theme:
       primary: blue
       accent: gray
       toggle:
-        icon: material/toggle-switch
+        icon: material/dark-mode
         name: Switch to dark mode
     - scheme: slate
       primary: blue
       accent: gray
       toggle:
-        icon: material/toggle-switch-off-outline
+        icon: material/light-mode
         name: Switch to light mode
   font:
     text: Roboto
     code: Roboto Mono
   favicon: assets/logo.png
   icon:
-    logo: logo
+    logo: logo.svg
 
 extra:
   social:
