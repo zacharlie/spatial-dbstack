@@ -236,11 +236,13 @@ services:
       # - loki
 
   monitor:
-    image: louislam/uptime-kuma
+    # image: louislam/uptime-kuma
     # image: custom/uptime-kuma
+    image: custom/uptime-kuma-temp
     # build:
     #   context: .
     #   dockerfile: uptime-kuma-dockerfile
+    #   dockerfile: uptime-kuma-temp-dockerfile
     volumes:
       - ./config/kuma:/app/data
     environment:
