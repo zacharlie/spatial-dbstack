@@ -25,29 +25,16 @@
 <!-- Custom front matter -->
 {% block extrahead %}
 
-  <!-- Extra style sheets (can't be set in mkdocs.yml due to content hash) -->
-  <link
-    rel="stylesheet"
-    href="{{ 'overrides/assets/stylesheets/main.css' | url }}"
-  />
-{% endblock %}
-
-<!-- Announcement bar -->
-{% block announce %}
-  <a href="https://twitter.com/squidfunk">
-    For updates follow <strong>@squidfunk</strong> on
-    <span class="twemoji twitter">
-      {% include ".icons/fontawesome/brands/twitter.svg" %}
-    </span>
-    <strong>Twitter</strong>
-  </a>
+<!-- Extra style sheets (can't be set in mkdocs.yml due to content hash) -->
+<link
+  rel="stylesheet"
+  href="{{ 'overrides/assets/stylesheets/main.css' | url }}"
+/>
 {% endblock %}
 
 <!-- Theme-related JavaScript -->
-{% block scripts %}
-  {{ super() }}
+{% block scripts %} {{ super() }}
 
-  <!-- Extra JavaScript (can't be set in mkdocs.yml due to content hash) -->
-  <script src="{{ 'overrides/assets/javascripts/bundle.js' | url }}"></script>
+<!-- Extra JavaScript (can't be set in mkdocs.yml due to content hash) -->
+<script src="{{ 'overrides/assets/javascripts/bundle.js' | url }}"></script>
 {% endblock %}
-
