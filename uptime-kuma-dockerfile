@@ -13,12 +13,38 @@ WORKDIR /app
 RUN git clone https://github.com/louislam/uptime-kuma.git .
 RUN wget https://patch-diff.githubusercontent.com/raw/louislam/uptime-kuma/pull/1092.diff
 RUN git apply 1092.diff
+
 FROM git as node
 WORKDIR /app
-RUN npm ci --production && chmod +x /app/extra/entrypoint.sh
+RUN rm node_modules -rf && \
+    rm package.lock -f
+RUN npm ci --production
+
+# FROM node as check
+# docker build --progress=plain . -f uptime-kuma-dockerfile -t custom/uptime-kuma
+# get registry
+# RUN echo $(npm get registry)
+# check config
+# RUN echo $(npm config ls -l)
+
+FROM node as vite
+WORKDIR /app
+# workarounds for socket timeout npm ERR!
+# set registry to http from https
+RUN npm config set registry="http://registry.npmjs.org/"
+# default 10000
+# RUN npm config set fetch-retry-mintimeout 20000
+# default 60000
+# RUN npm config set fetch-retry-maxtimeout 120000
+RUN npm install vite
+
+FROM vite as build
+WORKDIR /app
+RUN npx vite build --config ./config/vite.config.js && \
+    chmod +x /extra/entrypoint.sh
 
 EXPOSE 3001
-VOLUME ["/app/data"]
+VOLUME ["/data"]
 HEALTHCHECK --interval=60s --timeout=30s --start-period=180s --retries=5 CMD node extra/healthcheck.js
-ENTRYPOINT ["/usr/bin/dumb-init", "--", "/app/extra/entrypoint.sh"]
-CMD ["node", "/app/server/server.js"]
+ENTRYPOINT ["/usr/bin/dumb-init", "--", "/extra/entrypoint.sh"]
+CMD ["node", "/server/server.js"]
