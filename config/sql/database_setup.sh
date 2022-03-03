@@ -25,30 +25,30 @@ unset operationstatus
 ########################################
 
 ########################################
-#             SHAPEFILES               #
-# Check shapefile data ingestion status
-echo "Checking if shapefile ingestion has already occurred"
+#               GEODATA                #
+# Check geodata data ingestion status
+echo "Checking if geodata ingestion has already occurred"
 operationstatus=`PGPASSWORD=${POSTGRES_PASS} psql -A -X -q -t -d "${POSTGRES_DB}" -p 5432 -U "$POSTGRES_USER" \
--h localhost -c "SELECT ops_exec FROM public._initops WHERE ops_name = 'shapefile' LIMIT 1;"`
+-h localhost -c "SELECT ops_exec FROM public._initops WHERE ops_name = 'geodata' LIMIT 1;"`
 
 if [ "${operationstatus}" = "t" ]; then
-  echo "Shapefile ingestion process has already been implemented"
+  echo "Geodata ingestion process has already been implemented"
 else
-  echo "Shapefile ingestion process initiating..."
-  # Ingest shapefiles from data volume into database
+  echo "Geodata ingestion process initiating..."
+  # Ingest geomdata from data volume into database
   pushd /data/ || exit
-  for file in *.shp; do \
+  for file in *.{shp,json,geojson,gpkg}; do \
     ogr2ogr -progress --config PG_USE_COPY YES \
     -f PostgreSQL "PG:dbname='${POSTGRES_DB}' host=localhost port=5432 user='$POSTGRES_USER' password='${POSTGRES_PASS}' sslmode=allow active_schema=publish" \
     -lco DIM=2 "${file}" -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nlt PROMOTE_TO_MULTI; done
   popd || exit
 
-  echo "Shapefile ingestion complete. Setting operation status"
+  echo "Geodata ingestion complete. Setting operation status"
   PGPASSWORD=${POSTGRES_PASS} psql -d "${POSTGRES_DB}" -p 5432 -U "$POSTGRES_USER" \
-  -h localhost -c "INSERT INTO public._initops(ops_name, ops_exec) VALUES ('shapefile', true);"
+  -h localhost -c "INSERT INTO public._initops(ops_name, ops_exec) VALUES ('geodata', true);"
 fi
 unset operationstatus
-#          END SHAPEFILES              #
+#            END GEODATA               #
 ########################################
 
 ########################################
