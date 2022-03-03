@@ -2,13 +2,13 @@
 
 The Spatial DBStack is a simple docker-compose based stack for PostgreSQL with the PostGIS extension, that provides an enterprise-ready database solution with additional stack components for monitoring, administration, and data publishing OOTB.
 
-> **pre-alpha warning**: this will eat your homework
+> **Pre-Alpha warning**: this will eat your homework
 
 It's optimized for utilization with spatial data by providing geodata APIS and a vector tile service, and is based on the [kartoza/docker-postgis](https://github.com/kartoza/docker-postgis) image.
 
 For the most part, dbstack will be used to refer to the project, but the repo name spatial-dbstack was used to explicitly outline it's intended purpose as a spatial datastore.
 
-![dbstack-screenshot](screenshot.png)
+![dbstack-screenshot](docsrc/assets/images/screenshot.png)
 
 ## Installation
 
@@ -69,7 +69,7 @@ Filebrowser username default is admin.
 - PostgREST (with swagger ui, exposes everything in the publish schema)
 - PGAdmin (easy access to db via web UI without exposing the db port publicly)
 - Uptime Kuma (personal uptime robot)
-- pg_featureserv (OGC features API for everything in the publish schema)
+- pg_featureserv (OGC features/ WFS3 API for everything in the publish schema)
 - pg_tileeserv (Vector tiles for everything in the publish schema)
 - Grafana (with prometheus and loki)
 - Filebrowser (for file uploads and management)
