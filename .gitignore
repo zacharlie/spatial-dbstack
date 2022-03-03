@@ -1,6 +1,7 @@
 .env
 .ignore/
 *.ignore
+config/secrets
 # prevent commits including ssl certs
 config/ssl/*.key
 config/ssl/*.crt
