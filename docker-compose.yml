@@ -238,6 +238,9 @@ services:
   monitor:
     # image: louislam/uptime-kuma
     image: custom/uptime-kuma
+    build:
+      context: .
+      dockerfile: uptime-kuma-dockerfile
     volumes:
       - ./config/kuma:/app/data
     environment:
