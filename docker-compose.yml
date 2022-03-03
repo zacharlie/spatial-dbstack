@@ -236,15 +236,15 @@ services:
       # - loki
 
   monitor:
-    # image: louislam/uptime-kuma
-    image: custom/uptime-kuma
-    build:
-      context: .
-      dockerfile: uptime-kuma-dockerfile
+    image: louislam/uptime-kuma
+    # image: custom/uptime-kuma
+    # build:
+    #   context: .
+    #   dockerfile: uptime-kuma-dockerfile
     volumes:
       - ./config/kuma:/app/data
     environment:
-      - UPTIME_KUMA_BASE_PATH=https://127.0.0.1/uptime/
+      - UPTIME_KUMA_BASE_PATH=${SERVER_URL}/uptime/
       - BASE_PATH=/uptime/
     # logging: *loki-logging
     # ports:
