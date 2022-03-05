@@ -14,6 +14,18 @@ Check for a log in alert box provided by your browser. Most of the services (exc
 
 The basic http auth will be cached as a browser cookie so you only have to authenticate once per session for all the services.
 
+## How do I reset the stack
+
+As a set of docker-compose services, shutting down the stack can be done with `docker-compose down` from the commandline as long as it's done from the project root directory. Using `docker-compose down -v` will remove all the named volumes which are storing state (like the data present in the database etc). You can also use `docker-compose <command> <service id>` where commands include operations like start, stop, restart, and _rm_ to remove. The service id can be inferred from the docker compose file or docker tools.
+
+## The monitoring tool isn't working
+
+Make sure you build the appropriate docker image, or fire up the stack with `docker-compose up -d --build`. This only needs to be done once... successive running of the stack can be done with `docker-compose up -d`.
+
+## How do I add monitoring services
+
+The Uptime Kuma service has been preconfigured to serve up the status page by default. If the setup script and example database is used, the status page will be displayed in a user facing manner, by pointing the browser to an address like `https://127.0.0.1/uptime/status` by default. Administrators can access the service by navigating to `https://127.0.0.1/uptime/dashboard` and logging in, which will expose the appropriate management commands.
+
 ## I can't access services from another client application
 
 You need an SSL exception if using a self-signed certificate (the default behaviour) and some method of supplying basic web auth.
@@ -21,8 +33,12 @@ You need an SSL exception if using a self-signed certificate (the default behavi
 ## Can't I use letsencrypt certificates?
 
 Free ssl services like letsencrypt and zerossl require route challenges, and access to ports 80 and 443 (which cannot be shared by other docker containers).
-Usually, docker-based letsencrypt setups do a bit of jumping thorugh hoops to validate certificates
-The SSL certs are intended to be in a volume, so if If you have the ability to do a DNS challenge instead, that is probably easier.
+
+Usually, docker-based letsencrypt setups do a bit of jumping through hoops to validate certificates, but the process is challenging to automate in containerised setups. Many implementations expose a separate temporary web server for passing the challenge and hand over after the fact.
+
+Often these setups are also challenging to get right for development deployments, which are often not publicly accessible.
+
+The SSL certs are intended to be in a volume, so if If you have the ability to do a DNS challenge instead, that is probably easier. Until such time as an effective bolt-on approach can be implemented, self signed certificates are better than no certificates.
 
 ## I can't see my data via the PostgREST API
 
@@ -48,4 +64,4 @@ If you are struggling to load your data into QGIS, inspecting network requests i
 
 ## Tileserv links are broken
 
-The pg_tileserv templates don't support the baseurl, so links and previews don't work the same way as they work in the pg_featureserv templates. This seems to be an upstream bug which needs fixing. If you click a link and nothing shows up, you'll notice you probably need to manually insert _/tiles/_ into the url at the appropriate position. The endpoints should still work in other apps and services though.
+The pg*tileserv templates don't support the baseurl, so links and previews don't work the same way as they work in the pg_featureserv templates. This seems to be an upstream bug which needs fixing. If you click a link and nothing shows up, you'll notice you probably need to manually insert */tiles/\_ into the url at the appropriate position. The endpoints should still work in other apps and services though.

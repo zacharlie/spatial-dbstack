@@ -54,6 +54,8 @@ This provides a convenient interface for database management, which is especiall
 
 A simple personal uptime robot for monitoring service health and sending out notices.
 
+Requires a custom docker build to add PR#1092 which enables utilisation under a subpath (as configured in this stack). Defaults to loading the user-friendly status page at `https://127.0.0.1/uptime/status` and requires manual navigation to `https://127.0.0.1/uptime/dashboard` to access login and administrative features.
+
 ### pg_featureserv
 
 An OGC features/ WFS3 API for PostGIS. Using the default setup provided by the dbstack, it exposes everything in the publish schema. Note that the WFS3 API is a geodata API for interacting with features in a GIS or map interface and differs significantly from the API supplied by PostREST.
