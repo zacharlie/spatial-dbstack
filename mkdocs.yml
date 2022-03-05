@@ -1,8 +1,8 @@
-site_name: DB Stack Docs
+site_name: DB Stack
 site_url: https://zacharlie.github.io/spatial-dbstack/
 site_author: I am not a cat
 site_description: >-
-  User docs for the spatial database stack.
+  User docs for the spatial dbstack
 repo_name: dbstack
 repo_url: https://github.com/zacharlie/spatial-dbstack
 edit_uri: "https://github.com/zacharlie/spatial-dbstack/blob/main/docsrc/"
@@ -58,20 +58,20 @@ theme:
       primary: blue
       accent: gray
       toggle:
-        icon: material/dark-mode
+        icon: material/brightness-4
         name: Switch to dark mode
     - scheme: slate
       primary: blue
       accent: gray
       toggle:
-        icon: material/light-mode
+        icon: material/brightness-6
         name: Switch to light mode
   font:
     text: Roboto
     code: Roboto Mono
   favicon: assets/logo.png
   icon:
-    logo: logo.svg
+    logo: material/database
 
 extra:
   social:

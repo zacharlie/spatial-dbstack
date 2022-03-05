@@ -42,6 +42,19 @@
     display: none;
   }
 
+  .hero-spacer,
+  .mdx-hero__content h1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+    margin: 0;
+  }
+
+  .mdx-hero__content-btns * {
+    margin: 10px;
+  }
+
   /* Hide table of contents */
   @media screen and (min-width: 60em) {
     .md-sidebar--secondary {
@@ -61,38 +74,52 @@
 <section class="mdx-container">
   <div class="md-grid md-typeset">
     <div class="mdx-hero">
-      <!-- Hero image -->
-      <div class="mdx-hero__image">
-        <img
-          src="assets/images/screenshot.png"
-          alt=""
-          width="800"
-          height="610"
-          draggable="false"
-        />
+      <!-- Hero content -->
+      <div class="hero-spacer">
+        <div class="mdx-hero__content">
+          <h1>{{ config.site_description }}</h1>
+          <div class="mdx-hero__content-btns">
+            <a
+              href="{{ page.next_page.url | url }}"
+              title="{{ page.next_page.title | e }}"
+              class="md-button md-button--primary"
+            >
+              Quick start
+            </a>
+            <a
+              href="{{ 'faq/faq' | url }}"
+              title="Read FAQ"
+              class="md-button md-button--primary"
+            >
+              Read FAQ
+            </a>
+            <a
+              href="{{ 'library/snippets' | url }}"
+              title="Browse Snippets md-button--primary"
+              class="md-button"
+            >
+              Browse Snippets
+            </a>
+          </div>
+        </div>
       </div>
 
-      <!-- Hero content -->
-      <div class="mdx-hero__content">
-        <h1>{{ config.site_description }}</h1>
-        <a
-          href="{{ page.next_page.url | url }}"
-          title="{{ page.next_page.title | e }}"
-          class="md-button md-button--primary"
-        >
-          Quick start
-        </a>
-        <a
-          href="{{ 'faq/faq' | url }}"
-          title="Material for MkDocs Insiders"
-          class="md-button"
-        >
-          Read FAQ
-        </a>
+      <!-- Hero image -->
+      <div class="hero-spacer">
+        <div class="mdx-hero__image">
+          <img
+            src="assets/images/screenshot.png"
+            alt=""
+            width="600"
+            height="400"
+            draggable="false"
+          />
+        </div>
       </div>
     </div>
   </div>
 </section>
+<section></section>
 {% endblock %}
 
 <!-- Content -->
