@@ -237,20 +237,16 @@ services:
 
   monitor:
     # image: louislam/uptime-kuma
-    # image: custom/uptime-kuma
-    image: custom/uptime-kuma-temp
-    # build:
-    #   context: .
-    #   dockerfile: uptime-kuma-dockerfile
-    #   dockerfile: uptime-kuma-temp-dockerfile
+    image: custom/uptime-kuma
+    build:
+      context: .
+      dockerfile: uptime-kuma-dockerfile
     volumes:
       - ./config/kuma:/app/data
     environment:
-      - UPTIME_KUMA_BASE_PATH=${SERVER_URL}/uptime/
       - BASE_PATH=/uptime/
-    # logging: *loki-logging
-    # ports:
-    #   - "3001:3001"
+      - UPTIME_KUMA_BASE_PATH=/uptime/
+      # logging: *loki-logging
     expose:
       - 3001
       # depends_on:
