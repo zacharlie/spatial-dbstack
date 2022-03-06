@@ -67,6 +67,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#snippets" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -260,7 +265,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../grafana/" class="md-tabs__link md-tabs__link--active">
+      <a href="./" class="md-tabs__link md-tabs__link--active">
         Library
       </a>
     </li>
@@ -517,11 +522,52 @@
               
   
   
+    
   
-    <li class="md-nav__item">
-      <a href="../grafana/" class="md-nav__link">
-        Grafana Queries
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Snippets
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        Snippets
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#graphql" class="md-nav__link">
+    GraphQL
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -531,19 +577,11 @@
               
   
   
-    
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-      
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
-        Snippets
+    <li class="md-nav__item">
+      <a href="../grafana/" class="md-nav__link">
+        Grafana Queries
       </a>
-      
     </li>
   
 
@@ -606,6 +644,39 @@
               </div>
             
             
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#graphql" class="md-nav__link">
+    GraphQL
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
           
           <div class="md-content" data-md-component="content">
             <article class="md-content__inner md-typeset">
@@ -617,9 +688,79 @@
 
 
 
-  <h1>Snippets</h1>
-
-
+<h1 id="snippets">Snippets<a class="headerlink" href="#snippets" title="Permanent link">&para;</a></h1>
+<h2 id="graphql">GraphQL<a class="headerlink" href="#graphql" title="Permanent link">&para;</a></h2>
+<p>https://www.graphile.org/postgraphile/examples/</p>
+<p>Basic query</p>
+<pre><code class="language-js">{allNe10MAdmin0Countries{nodes{name}}}
+</code></pre>
+<p>Retrieve schema details (list types)</p>
+<pre><code class="language-js">{
+  __schema {
+    types {
+      name
+      kind
+      fields {
+        name
+      }
+    }
+  }
+}
+</code></pre>
+<p>Retrieve details for type</p>
+<pre><code class="language-js">{
+  __type(name: &quot;Query&quot;) {
+    name
+    kind
+    description
+    fields {
+      name
+    }
+  }
+}
+</code></pre>
+<p>Retrieve objects with specified fields</p>
+<pre><code class="language-js">{
+  allNe10MAdmin0Countries {
+    edges {
+      node {
+        id
+        name
+      }
+    }
+  }
+}
+</code></pre>
+<p>Named query</p>
+<pre><code class="language-js">query getCountries {
+  allNe10MAdmin0Countries {
+    nodes {
+      id
+      name
+    }
+  }
+}
+</code></pre>
+<p>Retrieve item by id</p>
+<pre><code class="language-js">{
+  ne10MAdmin0CountryById (id: 6) {
+    name
+  }
+}
+</code></pre>
+<p>Retrieve object with conditional filter</p>
+<pre><code class="language-js">{
+  allNe10MAdmin0Countries(condition: {name: &quot;Argentina&quot;}) {
+    edges {
+      node {
+        id
+        sovereignt
+        name
+      }
+    }
+  }
+}
+</code></pre>
 
               
             </article>
@@ -638,7 +779,7 @@
     <nav class="md-footer__inner md-grid" aria-label="Footer">
       
         
-        <a href="../grafana/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Grafana Queries" rel="prev">
+        <a href="../../architecture/design/" class="md-footer__link md-footer__link--prev" aria-label="Previous: Design" rel="prev">
           <div class="md-footer__button md-icon">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
           </div>
@@ -647,20 +788,20 @@
               <span class="md-footer__direction">
                 Previous
               </span>
-              Grafana Queries
+              Design
             </div>
           </div>
         </a>
       
       
         
-        <a href="../../tutorials/qgis/" class="md-footer__link md-footer__link--next" aria-label="Next: QGIS" rel="next">
+        <a href="../grafana/" class="md-footer__link md-footer__link--next" aria-label="Next: Grafana Queries" rel="next">
           <div class="md-footer__title">
             <div class="md-ellipsis">
               <span class="md-footer__direction">
                 Next
               </span>
-              QGIS
+              Grafana Queries
             </div>
           </div>
           <div class="md-footer__button md-icon">

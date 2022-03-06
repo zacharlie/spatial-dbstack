@@ -265,7 +265,7 @@
   
   
     <li class="md-tabs__item">
-      <a href="../../library/grafana/" class="md-tabs__link">
+      <a href="../../library/snippets/" class="md-tabs__link">
         Library
       </a>
     </li>
@@ -471,8 +471,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#i-only-log-into-one-page" class="md-nav__link">
-    I only log into one page
+  <a href="#i-only-log-into-one-page-but-many-of-them-have-auth-configured" class="md-nav__link">
+    I only log into one page but many of them have Auth Configured
   </a>
   
 </li>
@@ -647,8 +647,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../library/grafana/" class="md-nav__link">
-        Grafana Queries
+      <a href="../../library/snippets/" class="md-nav__link">
+        Snippets
       </a>
     </li>
   
@@ -661,8 +661,8 @@
   
   
     <li class="md-nav__item">
-      <a href="../../library/snippets/" class="md-nav__link">
-        Snippets
+      <a href="../../library/grafana/" class="md-nav__link">
+        Grafana Queries
       </a>
     </li>
   
@@ -760,8 +760,8 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#i-only-log-into-one-page" class="md-nav__link">
-    I only log into one page
+  <a href="#i-only-log-into-one-page-but-many-of-them-have-auth-configured" class="md-nav__link">
+    I only log into one page but many of them have Auth Configured
   </a>
   
 </li>
@@ -860,8 +860,8 @@
 <p>By default, we're using self signed ssl certificates. This means that the browser will not trust the certificate, although it is secure. Supplying valid SSL certificates from a registrar, ISP, or service such as letsencrypt or zerossl will remove such errors.</p>
 <h2 id="pages-arent-loading">Pages aren't loading<a class="headerlink" href="#pages-arent-loading" title="Permanent link">&para;</a></h2>
 <p>Check for a log in alert box provided by your browser. Most of the services (except the landing) require http basic auth provided by the nginx proxy to secure services and prevent data leaks. If it's not an auth issue, check that the landing page is available and nginx is running.</p>
-<h2 id="i-only-log-into-one-page">I only log into one page<a class="headerlink" href="#i-only-log-into-one-page" title="Permanent link">&para;</a></h2>
-<p>The basic http auth will be cached as a browser cookie so you only have to authenticate once per session for all the services.</p>
+<h2 id="i-only-log-into-one-page-but-many-of-them-have-auth-configured">I only log into one page but many of them have Auth Configured<a class="headerlink" href="#i-only-log-into-one-page-but-many-of-them-have-auth-configured" title="Permanent link">&para;</a></h2>
+<p>The basic http auth will often be cached by your browser so you only have to authenticate once per session for all the services, and your browser will take care of injecting the authentication. Conversely, if you build an application that uses these APIs they will need to handle the http auth internally.</p>
 <h2 id="how-do-i-reset-the-stack">How do I reset the stack<a class="headerlink" href="#how-do-i-reset-the-stack" title="Permanent link">&para;</a></h2>
 <p>As a set of docker-compose services, shutting down the stack can be done with <code>docker-compose down</code> from the commandline as long as it's done from the project root directory. Using <code>docker-compose down -v</code> will remove all the named volumes which are storing state (like the data present in the database etc). You can also use <code>docker-compose &lt;command&gt; &lt;service id&gt;</code> where commands include operations like start, stop, restart, and <em>rm</em> to remove. The service id can be inferred from the docker compose file or docker tools.</p>
 <h2 id="the-monitoring-tool-isnt-working">The monitoring tool isn't working<a class="headerlink" href="#the-monitoring-tool-isnt-working" title="Permanent link">&para;</a></h2>
@@ -882,12 +882,12 @@
 <p>PGAdmin is locked away behind two layers of auth in this way, which makes it more difficult to interact with when not using a browser, but considering the danger to your database being exposed, it's worth keeping this configuration active.</p>
 <h2 id="qgis-wont-load-tile-services">QGIS won't load tile services<a class="headerlink" href="#qgis-wont-load-tile-services" title="Permanent link">&para;</a></h2>
 <p>Check that you aren't requesting the whole dataset. If you have no other data loaded and try load a global vector tile service, the tile server will return an internal server error.</p>
-<p>This is because if you try load a region like <code>https://host.tld/tiles/publish.ne_10m_admin_0_countries/0/0/0.pbf</code> in the browser you will find that the</p>
+<p>This is because if you try load a region like <code>https://host.tld/tiles/publish.ne_10m_admin_0_countries/0/0/0.pbf</code> in the browser you will find that the service returns an error response.</p>
 <p>By contrast, if you try putting <code>https://host.tld/tiles/publish.ne_10m_admin_0_countries/12/31/-29.pbf</code> into your browser, you should download a protobuf file if the tile server is working properly.</p>
 <h2 id="how-do-i-view-qgis-network-requests">How do I view QGIS network requests<a class="headerlink" href="#how-do-i-view-qgis-network-requests" title="Permanent link">&para;</a></h2>
 <p>If you are struggling to load your data into QGIS, inspecting network requests is a good way to debug. Open them using the <em>F12</em> shortcut key, or by navigating to <em>View &gt;&gt; Panels &gt;&gt; Debugging/ Development tools</em>. Press the record button and try load data or pan the map to see what requests QGIS is using to retrieve the data. If any errors occur, QGIS will capture them for you.</p>
 <h2 id="tileserv-links-are-broken">Tileserv links are broken<a class="headerlink" href="#tileserv-links-are-broken" title="Permanent link">&para;</a></h2>
-<p>The pg<em>tileserv templates don't support the baseurl, so links and previews don't work the same way as they work in the pg_featureserv templates. This seems to be an upstream bug which needs fixing. If you click a link and nothing shows up, you'll notice you probably need to manually insert </em>/tiles/_ into the url at the appropriate position. The endpoints should still work in other apps and services though.</p>
+<p>The pg_tileserv templates don't support the baseurl, so links and previews don't work the same way as they work in the pg_featureserv templates. This seems to be an upstream bug which needs fixing. If you click a link and nothing shows up, you'll notice you probably need to manually insert <code>/tiles/</code> into the url at the appropriate position. The endpoints should still work in other apps and services though.</p>
 
               
             </article>
