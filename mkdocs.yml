@@ -22,8 +22,8 @@ nav:
   - Architecture:
       - Design: architecture/design.md
   - Library:
-      - Grafana Queries: library/grafana.md
       - Snippets: library/snippets.md
+      - Grafana Queries: library/grafana.md
   - Tutorials:
       - QGIS: tutorials/qgis/index.md
 
