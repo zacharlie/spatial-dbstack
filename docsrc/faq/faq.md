@@ -54,7 +54,7 @@ PGAdmin is locked away behind two layers of auth in this way, which makes it mor
 
 Check that you aren't requesting the whole dataset. If you have no other data loaded and try load a global vector tile service, the tile server will return an internal server error.
 
-This is because if you try load a region like `https://host.tld/tiles/publish.ne_10m_admin_0_countries/0/0/0.pbf` in the browser you will find that the
+This is because if you try load a region like `https://host.tld/tiles/publish.ne_10m_admin_0_countries/0/0/0.pbf` in the browser you will find that the service returns an error response.
 
 By contrast, if you try putting `https://host.tld/tiles/publish.ne_10m_admin_0_countries/12/31/-29.pbf` into your browser, you should download a protobuf file if the tile server is working properly.
 
@@ -64,4 +64,4 @@ If you are struggling to load your data into QGIS, inspecting network requests i
 
 ## Tileserv links are broken
 
-The pg*tileserv templates don't support the baseurl, so links and previews don't work the same way as they work in the pg_featureserv templates. This seems to be an upstream bug which needs fixing. If you click a link and nothing shows up, you'll notice you probably need to manually insert */tiles/\_ into the url at the appropriate position. The endpoints should still work in other apps and services though.
+The pg_tileserv templates don't support the baseurl, so links and previews don't work the same way as they work in the pg_featureserv templates. This seems to be an upstream bug which needs fixing. If you click a link and nothing shows up, you'll notice you probably need to manually insert `/tiles/` into the url at the appropriate position. The endpoints should still work in other apps and services though.
