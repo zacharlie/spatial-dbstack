@@ -40,11 +40,9 @@ PasswordAuthentication no
 - https://github.com/grafana/loki/issues/2361
 - https://github.com/louislam/uptime-kuma/issues/147
 
-## Getting uptime Kuma Running
+## Running uptime Kuma
 
-It [may take a while](https://github.com/louislam/uptime-kuma/pull/1349) before new features are introduced to uptime kuma, but the implementation currently [requires a subpath](https://github.com/louislam/uptime-kuma/issues/147), for which there is an [open PR](https://github.com/louislam/uptime-kuma/pull/1092). The dockerfile can be built with `docker build . -f uptime-kuma-dockerfile -t custom/uptime-kuma` or `docker-compose up -d --build`, but it has to isntall lots of node modules etc so a discrete build is recommended.
-
-Even with this approach, the image runs in isolation with `docker run -d -p 3001:3001 custom/uptime-kuma`, but fails when using the required environment variables, e.g. `docker run -d -p 3001:3001 -e UPTIME_KUMA_BASE_PATH=https://127.0.0.1/uptime/ -e BASE_PATH=/uptime/ custom/uptime-kuma`. No idea why that is. There's likely a conflict between the current application and the historic PR somewhere.
+It [may take a while](https://github.com/louislam/uptime-kuma/pull/1349) before new features are introduced to uptime kuma, but the implementation currently [requires a subpath](https://github.com/louislam/uptime-kuma/issues/147), for which there is an [open PR](https://github.com/louislam/uptime-kuma/pull/1092). The dockerfile can be built with `docker build . -f uptime-kuma-dockerfile -t custom/uptime-kuma` or `docker-compose up -d --build`, but it has to install lots of node modules etc so a discrete build is recommended.
 
 Uptime-Kuma is pretty and easy to use, but it may well be necessary to switch to an alternative like [cabot](https://github.com/arachnys/cabot) or even [netdata](https://github.com/netdata/netdata) if the project development stalls or a work around is not found.
 
