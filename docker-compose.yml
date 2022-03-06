@@ -137,7 +137,7 @@ services:
         "--schema",
         "${PGRST_DB_SCHEMAS}",
         "--default-role",
-        "anonymous",
+        "${PGRST_DB_USER}",
         "--cors",
         "--watch"
       ]
