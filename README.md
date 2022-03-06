@@ -34,18 +34,6 @@ PasswordAuthentication no
 
 `service ssh restart`
 
-## Known issues
-
-- https://github.com/docker/compose/issues/8756
-- https://github.com/grafana/loki/issues/2361
-- https://github.com/louislam/uptime-kuma/issues/147
-
-## Running uptime Kuma
-
-It [may take a while](https://github.com/louislam/uptime-kuma/pull/1349) before new features are introduced to uptime kuma, but the implementation currently [requires a subpath](https://github.com/louislam/uptime-kuma/issues/147), for which there is an [open PR](https://github.com/louislam/uptime-kuma/pull/1092). The dockerfile can be built with `docker build . -f uptime-kuma-dockerfile -t custom/uptime-kuma` or `docker-compose up -d --build`, but it has to install lots of node modules etc so a discrete build is recommended.
-
-Uptime-Kuma is pretty and easy to use, but it may well be necessary to switch to an alternative like [cabot](https://github.com/arachnys/cabot) or even [netdata](https://github.com/netdata/netdata) if the project development stalls or a work around is not found.
-
 ## Authorization
 
 For the nginx authorization system to work, an authorization file `config/nginx/webusers` contains user credentials, generated with htpasswd.
@@ -58,13 +46,26 @@ Default Username-Password Combo:
 
 Change these please. Note that the uptime service stores the password in the database and will need to be reset from the UI.
 
-Filebrowser username default is admin.
+The Filebrowser username default is admin. This app doesn't allow configuration of the superuser account name with the config file.
+
+## Known issues
+
+- https://github.com/docker/compose/issues/8756
+- https://github.com/grafana/loki/issues/2361
+- https://github.com/louislam/uptime-kuma/issues/147
+
+## Running uptime Kuma
+
+It [may take a while](https://github.com/louislam/uptime-kuma/pull/1349) before new features are introduced to uptime kuma, but the implementation currently [requires a subpath](https://github.com/louislam/uptime-kuma/issues/147), for which there is an [open PR](https://github.com/louislam/uptime-kuma/pull/1092). The dockerfile can be built with `docker build . -f uptime-kuma-dockerfile -t custom/uptime-kuma` or `docker-compose up -d --build`, but it has to install lots of node modules etc so a discrete build is recommended.
+
+Uptime-Kuma is pretty and easy to use, but it may well be necessary to switch to an alternative like [cabot](https://github.com/arachnys/cabot) or even [netdata](https://github.com/netdata/netdata) if the project development stalls or a work around is not found.
 
 ## Services
 
 - nginx (proxy for all services, and enforces http basic auth by default)
 - PostGIS (including pgrouting and other extensions)
 - PostgREST (with swagger ui, exposes everything in the publish schema)
+- postgraphile (includes GraphiQL interface)
 - PGAdmin (easy access to db via web UI without exposing the db port publicly)
 - Uptime Kuma (personal uptime robot)
 - pg_featureserv (OGC features/ WFS3 API for everything in the publish schema)
@@ -114,7 +115,7 @@ By default, docker tends to [ignore firewall rules such as those specified by uf
 
 ### Docker vs k8s
 
-This stack is specifically designed to run on a Docker host with the docker compose system. For the vast majority of use cases involving spatial data at the organisational or regional level, this should be perfectly adequate. Unless you are a kubernetes expert, are using a managed service, or employ full time devops staff, simply run this system in docker and scale your service vertically.
+This stack is specifically designed to run on a Docker host with the docker compose system. For the vast majority of use cases involving spatial data at the organisational or regional level, this should be perfectly adequate. Unless you are a kubernetes expert, are using a managed service, or employ full time devops staff, simply run this system in docker and scale up your infrastructure.
 
 If you are deploying to k8s infrastructure, these configurations can be configured as k8s resources, and in most instances the reverse proxy can be canned to have access managed by the ingress controller. If that sounds confusing, book a consultation with an expert instead.
 
@@ -131,6 +132,10 @@ Containers virtualize your infrastructure, so performance hits are obviously gua
 This is very PostgreSQL specific, and a number of the services support postgresql specific geodata (e.g. pg_tileserv). Using FDW for other geometry/ geography types likely won't work effectively for all services, and some ETL between data types and WKB can be expected as a requirement. If you want geodata services on top of another DBMS then you may have to configure services like [tegola](https://github.com/go-spatial/tegola) yourself. YMMV.
 
 TL;DR: Use PostgreSQL.
+
+## Sample geodata binaries in the repo
+
+I have included some geodata binaries I am using for demo production. Don't add more or change any. I will trim these down and purge them from the git filesystem later if/ when there are more significant users or contributors. Future plan is to have samples available in releases for download.
 
 ## Roadmap
 
