@@ -140,6 +140,7 @@ services:
         "${PGRST_DB_SCHEMAS}",
         "--default-role",
         "${PGRST_DB_USER}",
+        "--retry-on-init-fail",
         "--cors",
         "--watch"
       ]
