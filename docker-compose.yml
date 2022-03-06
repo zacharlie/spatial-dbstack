@@ -128,6 +128,26 @@ services:
       # - loki
       - db
 
+  postgraphile:
+    image: graphile/postgraphile
+    command:
+      [
+        "--connection",
+        "postgres://${PGRST_DB_USER}:${PGRST_DB_PASS}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=no-verify",
+        "--schema",
+        "${PGRST_DB_SCHEMAS}",
+        "--default-role",
+        "anonymous",
+        "--cors",
+        "--watch"
+      ]
+    # logging: *loki-logging
+    expose:
+      - 5000
+    depends_on:
+      # - loki
+      - db
+
   swagger:
     image: swaggerapi/swagger-ui
     environment:
