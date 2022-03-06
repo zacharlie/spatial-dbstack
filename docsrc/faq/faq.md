@@ -10,9 +10,9 @@ By default, we're using self signed ssl certificates. This means that the browse
 
 Check for a log in alert box provided by your browser. Most of the services (except the landing) require http basic auth provided by the nginx proxy to secure services and prevent data leaks. If it's not an auth issue, check that the landing page is available and nginx is running.
 
-## I only log into one page
+## I only log into one page but many of them have Auth Configured
 
-The basic http auth will be cached as a browser cookie so you only have to authenticate once per session for all the services.
+The basic http auth will often be cached by your browser so you only have to authenticate once per session for all the services, and your browser will take care of injecting the authentication. Conversely, if you build an application that uses these APIs they will need to handle the http auth internally.
 
 ## How do I reset the stack
 
