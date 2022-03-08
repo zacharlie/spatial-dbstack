@@ -181,6 +181,8 @@ Will there be caching services included? Unlikely - this is a database deploymen
 
 Another issue is finding an elegant solution for managing container DNS, such that docker elements can be pointed to the upstream db when not included in the stack itself. The POSTGRES_HOST variable is not really a suitable replacement as it is currently used in limited places.
 
+Some meaningful database settings should be configured for optimization (aside from providing an extra db-tune config), especially since it can reasonably be expected that spatial data will involve larger data types and rasters. Setting up connection poolers, verbose logging (and storing logs), and perhaps documenting an auditing process with something like [pgbadger](https://github.com/darold/pgbadger) could be highly valuable.
+
 Profiles config may be more effective using bash in combination with docker profiles, as their is probably a lot of different config expected to happen. The initial "profiles" configuration should include:
 
 - publish: publish everything in the publish schema and expose the db containers connection port to the network
