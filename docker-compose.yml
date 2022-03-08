@@ -275,6 +275,19 @@ services:
       # depends_on:
       # - loki
 
+  advisor:
+    image: gcr.io/cadvisor/cadvisor
+    expose:
+      - 8080
+    command:
+      - '-url_base_prefix=/advisor'
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+
   nginx:
     image: nginx
     volumes:
