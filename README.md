@@ -1,10 +1,12 @@
 # DBStack
 
-The Spatial DBStack is a simple docker-compose based stack for PostgreSQL with the PostGIS extension, that provides an enterprise-ready database solution with additional stack components for monitoring, administration, and data publishing OOTB.
+The Spatial DBStack is a simple and opinionated docker-compose based stack for PostgreSQL that provides an enterprise-ready database solution with additional stack components for monitoring, administration, and publication.
+
+Development is focussed on providing an easy to use spatial database services that is secure by default and provides enough functionality OOTB to allow sophisticated spatial applications to be developed without wrangling infrastructure or architecture.
 
 > **Pre-Alpha warning**: this will eat your homework
 
-It's optimized for utilization with spatial data by providing geodata APIS and a vector tile service, and is based on the [kartoza/docker-postgis](https://github.com/kartoza/docker-postgis) image.
+It's optimized for utilization with spatial data by providing spatial service APIs, and is based on the [kartoza/docker-postgis](https://github.com/kartoza/docker-postgis) image.
 
 For the most part, dbstack will be used to refer to the project, but the repo name spatial-dbstack was used to explicitly outline it's intended purpose as a spatial datastore.
 
@@ -129,18 +131,62 @@ Containers virtualize your infrastructure, so performance hits are obviously gua
 
 ### Other database systems
 
-This is very PostgreSQL specific, and a number of the services support postgresql specific geodata (e.g. pg_tileserv). Using FDW for other geometry/ geography types likely won't work effectively for all services, and some ETL between data types and WKB can be expected as a requirement. If you want geodata services on top of another DBMS then you may have to configure services like [tegola](https://github.com/go-spatial/tegola) yourself. YMMV.
+This is very PostgreSQL specific, and a number of the services support postgresql specific geodata (e.g. pg_tileserv). Using FDW for other geometry/ geography types likely won't work effectively for all services, and some ETL between data types and WKB can be expected as a requirement. If you want geodata services on top of another DBMS then you may have to configure services like geoserver yourself. YMMV.
 
 TL;DR: Use PostgreSQL.
 
 ## Sample geodata binaries in the repo
 
-I have included some geodata binaries I am using for demo production. Don't add more or change any. I will trim these down and purge them from the git filesystem later if/ when there are more significant users or contributors. Future plan is to have samples available in releases for download.
+I have included some geodata binaries I am using for demo production. Don't add more or change any. I will trim these down and purge them from the git filesystem later if/ when there are more significant users or contributors. Future plan is to have samples available in releases for download, and tiny subsets included in git for demos.
 
 ## Roadmap
 
 More services can be added, and maybe profiles can be configured at a later stage, much like the initial implementation of the [OSGS](https://github.com/kartoza/osgs). Prettier demos would be nice too, so make an issue or PR if you have an idea.
 
-I am planning on fixing the SSL to gracefully support user provided certs or automation at some point. I am also working on entrypoint scripts that go through secrets stored in config files and replacing them with template strings.
-
 At this point in time, meaningful templates and dashboards for graphana are highly desirable.
+
+Before it gets to a 0.1 release, the following changes are intended:
+
+- Complete a functional version of setup.sh that handles config and secrets properly
+- Replace nginx system with traefik for reverse proxy
+- Properly configure SSL using setup option of self signed, letsencrypt, or use certs
+- Fix up container logging using promtail
+- Include [postgres_exporter](https://github.com/prometheus-community/postgres_exporter) for db metrics monitoring (and example of including custom pg extensions)
+- Include db function for calling data importing processes
+- Include geodata file watcher (container and change detection process) for automating geodata and csv imports
+- Handling raster data as an API - probably with titiler and pg_stac
+- SSO/ login service with [authelia](https://www.authelia.com/)
+- Creation of appropriate roles and users for SSO (Admin/ RO/ RW) with service integration
+- Probably replace the landing page with something more useful, like [dashy](https://github.com/Lissy93/dashy)
+- Add [watchtower](https://github.com/containrrr/watchtower/). Typically I'm against anything that mounts to the docker socket, but considering the possible security benefits of watchtower running it's getting included.
+
+The release after will focus on these steps:
+
+- Add reasonable defaults for deployment config (container replicas etc)
+- customise the postgresql schema search path, so that elements in "publish" rather than "public" are available by default
+- Create a functional branding script which customises systems to reflect a corporate identity (where possible - this won't be magic)
+- Create a functional cleanup.sh which purges example data and samples from the system to allow for a clean start
+- Reasonable examples and sample resources that show how it can be effectively leveraged, extended, or further configured
+- Fixup of sample data to a tiny subset reasonably supplied with git (don't want to depend on releases for app examples), including spatial & non-spatial functions, relations etc
+- Profile configuration
+- Meaningful documentation
+
+Might include [cadvisor](https://github.com/google/cadvisor) or something similar for resource utilization, but it's probably redundant against other services and not sure how to run it as a value add without mounting system resources (which I'd like to avoid - I mean the default is sudo docker run?!). Might still be useful in userspace with perf. Will test.
+
+Will there be inclusion of an admin ui like portainer? Unlikely - doesn't make sense to make a docker compose stack depend on a particular orchestrator. Might add docs for those who want to use it that way. Will I build an admin UI like OSGS Admin? Maybe. If I get the time. That can do a bunch of config stuff that provides a UI for the setup.sh (in a reconfigurable way) at least.
+
+Will there be caching services included? Unlikely - this is a database deployment, not a web gis system. Setting up geowebcache/ mapproxy/ whatever should be done in front of this service.
+
+> An important issue which needs resolution is configuring the database allowed connections effectively. 0.0.0.0/0 is less than ideal for production, even in airgapped environments, and is typically outright dangerous.
+
+Another issue is finding an elegant solution for managing container DNS, such that docker elements can be pointed to the upstream db when not included in the stack itself. The POSTGRES_HOST variable is not really a suitable replacement as it is currently used in limited places.
+
+Profiles config may be more effective using bash in combination with docker profiles, as their is probably a lot of different config expected to happen. The initial "profiles" configuration should include:
+
+- publish: publish everything in the publish schema and expose the db containers connection port to the network
+- private: like publish but don't publish the db port
+- public: like publish, but get rid of the publish schema and use "public" for services
+- readonly: like publish, but configure services to only connect to a read only replica database instance
+- dbless: use the services with a database server that is not a part of the docker-compose
+
+A "complete", "monitoring", or "minimal" set of deployment options should also be specified which limits the services to only those that apply to a particular featureset.
