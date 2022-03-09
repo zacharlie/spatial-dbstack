@@ -36,11 +36,12 @@ services:
 
   db:
     image: kartoza/postgis:${POSTGRES_MAJOR_VERSION}-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_RELEASE}
+    # container_name: master-database
     volumes:
       - postgis-data:/var/lib/postgresql
       - db-backup:/backups
-      - ./config/sql/database_setup.sh:/docker-entrypoint-initdb.d/database_setup.sh
-      - ./config/sql:/sql/
+      - ./config/sql/database_setup.sh:/docker-entrypoint-initdb.d/database_setup.sh:ro
+      - ./config/sql:/sql:ro
       - ./config/geodata:/data
       - ./config/db/pgtune.conf:/settings/extra.conf
     environment:
