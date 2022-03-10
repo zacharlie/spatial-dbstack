@@ -49,8 +49,12 @@ for file in *.{shp,json,geojson}; do \
   if [ "${ingest}" = "t" ]; then
     ogr2ogr -progress --config PG_USE_COPY YES \
     -f PostgreSQL "PG:dbname='${POSTGRES_DB}' host=db port=5432 user='${POSTGRES_USER}' password='${POSTGRES_PASS}' sslmode=allow active_schema=${ACTIVE_SCHEMA}" \
-    -lco DIM=2 "${file}" -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nlt PROMOTE_TO_MULTI; done
+    -lco DIM=2 "${file}" -overwrite -lco GEOMETRY_NAME=geom -lco FID=id -nlt PROMOTE_TO_MULTI;
   fi
+
+  PGPASSWORD=${POSTGRES_PASS} psql -A -X -q -t -d "${POSTGRES_DB}" -p 5432 -U "${POSTGRES_USER}" \
+    -h db -c "INSERT INTO public.__dbstack_geodata VALUES (file_name='${file}',file_hash='${filehash}',ingest_status=1) OM CONFLICT(file_name, file_hash) DO UPDATE SET ingest_status=2;"
+  done
 
   unset filehash filerecord recordhash renamed ingest
 

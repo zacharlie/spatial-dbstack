@@ -52,20 +52,3 @@ END LOOP;
 RETURN 1;
 
 END $ $ LANGUAGE plpgsql;
-
--- tempfix for api role inheritance issue
-GRANT CONNECT ON DATABASE analysis TO api_user;
-
-GRANT USAGE ON SCHEMA publish TO api_user;
-
-GRANT
-SELECT
-  ON ALL TABLES IN SCHEMA publish TO api_user;
-
-ALTER DEFAULT PRIVILEGES IN SCHEMA publish GRANT
-SELECT
-  ON TABLES TO api_user;
-
-GRANT USAGE ON ALL SEQUENCES IN SCHEMA publish TO api_user;
-
-ALTER DEFAULT PRIVILEGES IN SCHEMA publish GRANT USAGE ON SEQUENCES TO api_user;
