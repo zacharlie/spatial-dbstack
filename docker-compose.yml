@@ -42,7 +42,7 @@ services:
       - db-backup:/backups
       - ./config/sql/database_setup.sh:/docker-entrypoint-initdb.d/database_setup.sh:ro
       - ./config/sql:/sql:ro
-      - ./config/geodata:/data
+      - ./geodata:/data
       - ./config/db/pgtune.conf:/settings/extra.conf
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
@@ -251,7 +251,8 @@ services:
       - ./config/filebrowser/filebrowser.json:/.filebrowser.json
       - ./config/filebrowser/:/config
       # filebrowser user will need permissions on specific folders
-      - ./config:/files/config
+      # - ./config:/files/config
+      - ./geodata:/files/data
     user: ${CURRENT_UID}
     # logging: *loki-logging
     expose:
