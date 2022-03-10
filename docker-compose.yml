@@ -42,7 +42,7 @@ services:
       - db-backup:/backups
       - ./config/sql/database_setup.sh:/docker-entrypoint-initdb.d/database_setup.sh:ro
       - ./config/sql:/sql:ro
-      - ./geodata:/data
+      - ./data:/data
       - ./config/db/pgtune.conf:/settings/extra.conf
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
@@ -252,7 +252,7 @@ services:
       - ./config/filebrowser/:/config
       # filebrowser user will need permissions on specific folders
       # - ./config:/files/config
-      - ./geodata:/files/data
+      - ./data:/files
     user: ${CURRENT_UID}
     # logging: *loki-logging
     expose:
@@ -264,11 +264,11 @@ services:
     image: geodata-filewatcher
     build:
       args:
-        TARGET: "/data"
+        TARGET: "/data/vector"
       context: .
       dockerfile: watchdog-dockerfile
     volumes:
-      - "./geodata:/data"
+      - "./data/vector:/data"
 
   monitor:
     # image: louislam/uptime-kuma
