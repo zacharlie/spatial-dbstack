@@ -260,6 +260,16 @@ services:
       # depends_on:
       # - loki
 
+  watchdog:
+    image: geodata-filewatcher
+    build:
+      args:
+        TARGET: "/data"
+      context: .
+      dockerfile: watchdog-dockerfile
+    volumes:
+      - "./geodata:/data"
+
   monitor:
     # image: louislam/uptime-kuma
     image: custom/uptime-kuma
