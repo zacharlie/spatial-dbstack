@@ -1,0 +1,20 @@
+FROM python:3.8
+
+RUN apt update && apt install -y postgresql-client python3-pip && pip3 install watchdog
+
+COPY ./config/watcher/watcher.py /ingest_geodata.sh
+COPY ./config/watcher/watcher.py /watcher.py
+# COPY ./config/watcher/watcher-poll.py /watcher.py
+
+RUN chmod +x /ingest_geodata.sh
+
+ARG TARGET
+ENV TARGET $TARGET
+
+# Run watchdog script unbuffered to ensure that the stdout and stderr
+# are available when running as daemonized process in the container.
+# The environment variable does the same thing as the -u switch
+# both are included here simply for the sake of redundancy/ resilience.
+ENV PYTHONUNBUFFERED=1
+
+ENTRYPOINT ["python3","-u","/watcher.py"]
