@@ -9,7 +9,14 @@ from os import system
 time.sleep(int(env["STARTUP_DELAY"]))
 
 if __name__ == "__main__":
-    patterns = ["*"]
+    # patterns = ["*"]  # watch all files
+    patterns = [
+        "*.shp",
+        "*.json",
+        "*.geojson",
+        "*.gpkg",
+        "*.csv",
+    ]
     ignore_patterns = [
         # ignore pycache
         "__pycache__/",
@@ -53,7 +60,7 @@ def on_moved(event):
 
 
 def ingest_geodata():
-    system('/ingest_geodata.sh')
+    system("/ingest_geodata.sh")
 
 
 ingest_geodata()
