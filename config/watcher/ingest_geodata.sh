@@ -2,7 +2,8 @@
 
 ACTIVE_SCHEMA=`echo ${SCHEMAS} | cut -d ',' -f1`
 
-pushd /data/ || exit
+# ensure operation is run from the target directory
+pushd ${TARGET} || exit
 
 ########################################
 # Ingest spatial data from filesystem  #
