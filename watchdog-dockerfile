@@ -8,18 +8,18 @@ RUN apt update && apt install -y \
 FROM base as build
 
 COPY ./config/watcher/ingest_geodata.sh /ingest_geodata.sh
-COPY ./config/watcher/init.sh /init.sh
 
-COPY ./config/watcher/watcher.py /watcher.py
-
+# COPY ./config/watcher/watcher.py /watcher.py
 # Use polling observer, required for windows
-# COPY ./config/watcher/watcher-poll.py /watcher.py
+COPY ./config/watcher/watcher-poll.py /watcher.py
 
 RUN chmod +x /ingest_geodata.sh
-RUN chmod +x /init.sh
 
-ARG TARGET
+ARG TARGET=./data
 ENV TARGET $TARGET
+
+ARG STARTUP_DELAY=5
+ENV STARTUP_DELAY $STARTUP_DELAY
 
 # Run watchdog script unbuffered to ensure that the stdout and stderr
 # are available when running as daemonized process in the container.

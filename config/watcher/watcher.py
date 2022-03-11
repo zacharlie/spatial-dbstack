@@ -5,6 +5,8 @@ import time
 from os import environ as env
 from os import system
 
+# give database a chance to boot up
+time.sleep(int(env["STARTUP_DELAY"]))
 
 if __name__ == "__main__":
     patterns = ["*"]

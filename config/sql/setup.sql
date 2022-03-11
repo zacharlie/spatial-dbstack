@@ -21,6 +21,9 @@ CREATE TABLE IF NOT EXISTS public.__dbstack_geodata (
   ingest_status integer
 );
 
+-- Unique index required for multicolumn conflict resolution used by file watcher
+CREATE UNIQUE INDEX IF NOT EXISTS __dbstack_geodata_file_uindex ON public.__dbstack_geodata (file_name, file_hash);
+
 COMMENT ON TABLE public.__dbstack_geodata IS 'Keep track geodata file ingestion status to allow automatic updates';
 
 -- Create group role
