@@ -1,6 +1,6 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
-ACTIVE_SCHEMA=$(echo ${SCHEMAS} | cut -d ',' -f1)
+ACTIVE_SCHEMA=`echo ${SCHEMAS} | cut -d ',' -f1`
 
 pushd /data/ || exit
 
@@ -11,21 +11,21 @@ pushd /data/ || exit
 
 for file in *.{shp,json,geojson}; do \
   # Get SHA1 Hash of file
-  filehash=$(sha1sum ${file} | awk '{print $1}')
+  filehash=`sha1sum ${file} | awk '{print $1}'`
   # Check if db record for file exists
   echo "Checking file record availability for ${file}"
   filerecord=`PGPASSWORD=${POSTGRES_PASS} psql -A -X -q -t -d "${POSTGRES_DB}" -p 5432 -U "${POSTGRES_USER}" \
-  -h db -c "SELECT EXISTS(file_name FROM public.__dbstack_geodata WHERE file_name = '${file}');"`
+  -h db -c "SELECT EXISTS(SELECT "file_name" FROM public.__dbstack_geodata WHERE "file_name" = '${file}');"`
   # Check if db record if hash exists (i.e. filename change)
   echo "Checking file record availability for ${file}"
   renamed=`PGPASSWORD=${POSTGRES_PASS} psql -A -X -q -t -d "${POSTGRES_DB}" -p 5432 -U "${POSTGRES_USER}" \
-  -h db -c "SELECT EXISTS(file_name FROM public.__dbstack_geodata WHERE file_hash = '${filehash}' AND file_name != '${file}');"`
+  -h db -c "SELECT EXISTS(SELECT "file_name" FROM public.__dbstack_geodata WHERE "file_hash" = '${filehash}' AND "file_name" != '${file}');"`
 
   if [ "${filerecord}" = "t" ]; then
     # Get the hash value from the database to determine whether updates are necessary
     echo "Checking database value for file hash of ${file}"
     recordhash=`PGPASSWORD=${POSTGRES_PASS} psql -A -X -q -t -d "${POSTGRES_DB}" -p 5432 -U "${POSTGRES_USER}" \
-    -h db -c "SELECT file_hash FROM public.__dbstack_geodata WHERE file_name = '${file}';"`
+    -h db -c "SELECT "file_hash" FROM public.__dbstack_geodata WHERE "file_name" = '${file}';"`
   fi
 
   if [ "${filerecord}" = "t" ] && [ "${filehash}" = "${recordhash}" ]; then
@@ -35,7 +35,7 @@ for file in *.{shp,json,geojson}; do \
     echo "Hash value for file ${file} exists. Renaming existing table and skipping ingestion."
     ingest="f"
     old_table=`PGPASSWORD=${POSTGRES_PASS} psql -A -X -q -t -d "${POSTGRES_DB}" -p 5432 -U "${POSTGRES_USER}" \
-    -h db -c "SELECT file_name FROM public.__dbstack_geodata WHERE file_hash = '${filehash}' AND file_name != '${file}' LIMIT 1;"`
+    -h db -c "SELECT "file_name" FROM public.__dbstack_geodata WHERE "file_hash" = '${filehash}' AND "file_name" != '${file}' LIMIT 1;"`
     PGPASSWORD=${POSTGRES_PASS} psql -A -X -q -t -d "${POSTGRES_DB}" -p 5432 -U "${POSTGRES_USER}" \
     -h db -c "ALTER TABLE IF EXISTS ${old_table} RENAME TO ${file};"
   elif [ "${filerecord}" = "t" ] && [ "${filehash}" != "${recordhash}" ]; then
@@ -53,7 +53,7 @@ for file in *.{shp,json,geojson}; do \
   fi
 
   PGPASSWORD=${POSTGRES_PASS} psql -A -X -q -t -d "${POSTGRES_DB}" -p 5432 -U "${POSTGRES_USER}" \
-    -h db -c "INSERT INTO public.__dbstack_geodata VALUES (file_name='${file}',file_hash='${filehash}',ingest_status=1) OM CONFLICT(file_name, file_hash) DO UPDATE SET ingest_status=2;"
+    -h db -c "INSERT INTO public.__dbstack_geodata (\"file_name\",\"file_hash\",\"ingest_status\") VALUES ('${file}','${filehash}',1) ON CONFLICT(\"file_name\", \"file_hash\") DO UPDATE SET \"ingest_status\"=2;"
   done
 
   unset filehash filerecord recordhash renamed ingest

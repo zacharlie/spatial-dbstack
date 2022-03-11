@@ -261,7 +261,7 @@ services:
       # - loki
 
   watchdog:
-    image: geodata-filewatcher
+    image: custom/geo-watcher
     build:
       args:
         TARGET: "/data/vector"
@@ -273,7 +273,7 @@ services:
       - POSTGRES_PASS=${POSTGRES_PASS}
       - SCHEMAS=${PGRST_DB_SCHEMAS}
     volumes:
-      - "./data/vector:/data"
+      - "./data/vector:/data/vector"
 
   monitor:
     # image: louislam/uptime-kuma

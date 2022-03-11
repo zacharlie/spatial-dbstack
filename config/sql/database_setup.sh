@@ -61,9 +61,9 @@ unset operationstatus
 # Ingest spatial data from filesystem  #
 
 # trigger file watcher
-
-touch /data/vector/init
-rm /data/vector/init
+rm /data/vector/init.dbstack
+touch /data/vector/init.dbstack
+rm /data/vector/init.dbstack
 
 #            END GEODATA               #
 ########################################

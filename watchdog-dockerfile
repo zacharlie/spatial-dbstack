@@ -1,12 +1,25 @@
-FROM python:3.8
+FROM python:3.8 as base
 
-RUN apt update && apt install -y postgresql-client python3-pip && pip3 install watchdog
+# RUN echo "deb http://deb.debian.org/debian $(lsb_release -cs) main unstable" >> /etc/apt/sources.list.d/unstable.list && \
+#     echo "deb-src http://deb.debian.org/debian $(lsb_release -cs) main unstable" >> /etc/apt/sources.list.d/unstable.list
 
-COPY ./config/watcher/watcher.py /ingest_geodata.sh
-COPY ./config/watcher/watcher.py /watcher.py
-# COPY ./config/watcher/watcher-poll.py /watcher.py
+# RUN apt update && apt install -y software-properties-common && \
+#     add-apt-repository ppa:ubuntugis/ppa && \
+RUN apt update && apt install -y \
+    gdal-bin postgresql-client python3-pip && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip3 install watchdog
+
+FROM base as build
+
+COPY ./config/watcher/ingest_geodata.sh /ingest_geodata.sh
+COPY ./config/watcher/init.sh /init.sh
+# COPY ./config/watcher/watcher.py /watcher.py
+# Use polling observer, required for windows
+COPY ./config/watcher/watcher-poll.py /watcher.py
 
 RUN chmod +x /ingest_geodata.sh
+RUN chmod +x /init.sh
 
 ARG TARGET
 ENV TARGET $TARGET
@@ -17,4 +30,5 @@ ENV TARGET $TARGET
 # both are included here simply for the sake of redundancy/ resilience.
 ENV PYTHONUNBUFFERED=1
 
-ENTRYPOINT ["python3","-u","/watcher.py"]
+ENTRYPOINT ["/init.sh","&>/dev/null","&","disown","&","python3","-u","/watcher.py"]
+# ENTRYPOINT ["python3","-u","/watcher.py"]
