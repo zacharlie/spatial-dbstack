@@ -7,6 +7,11 @@ CREATE TABLE IF NOT EXISTS public.__dbstack_initops (
   ops_exec boolean
 );
 
+INSERT INTO
+  public.__dbstack_initops (ops_name, ops_exec)
+VALUES
+  ('init', TRUE);
+
 COMMENT ON TABLE public.__dbstack_initops IS 'Keep track of initiliasation operations state when starting the database';
 
 COMMENT ON COLUMN public.__dbstack_initops.ops_name IS 'Name of the bootstrapping operation';
