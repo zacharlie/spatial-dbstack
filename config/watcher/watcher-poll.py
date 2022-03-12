@@ -11,6 +11,7 @@ time.sleep(int(env["STARTUP_DELAY"]))
 if __name__ == "__main__":
     # patterns = ["*"]  # watch all files
     patterns = [
+        "*.dbstack",
         "*.shp",
         "*.json",
         "*.geojson",
@@ -42,28 +43,37 @@ application_path = application_root.as_posix()
 def on_created(event):
     print(f"{event.src_path} has been created!")
     ingest_vector_data()
+    check_file_availability()
 
 
 def on_deleted(event):
     print(f"File / path deleted: {event.src_path}!")
     ingest_vector_data()
+    check_file_availability()
 
 
 def on_modified(event):
     print(f"{event.src_path} has been modified")
     ingest_vector_data()
+    check_file_availability()
 
 
 def on_moved(event):
     print(f"File moved {event.src_path} to {event.dest_path}")
     ingest_vector_data()
+    check_file_availability()
 
 
 def ingest_vector_data():
     system("/ingest_vector_data.sh")
 
 
+def check_file_availability():
+    system("/vector_file_availability.sh")
+
+
 ingest_vector_data()
+check_file_availability()
 
 my_event_handler.on_created = on_created
 my_event_handler.on_deleted = on_deleted

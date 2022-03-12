@@ -8,12 +8,14 @@ RUN apt update && apt install -y \
 FROM base as build
 
 COPY ./config/watcher/ingest_vector_data.sh /ingest_vector_data.sh
+COPY ./config/watcher/vector_file_availability.sh /vector_file_availability.sh
 
 COPY ./config/watcher/watcher.py /watcher.py
 # Use polling observer, required for windows
 # COPY ./config/watcher/watcher-poll.py /watcher.py
 
 RUN chmod +x /ingest_vector_data.sh
+RUN chmod +x /vector_file_availability.sh
 
 ARG TARGET=./data
 ENV TARGET $TARGET
