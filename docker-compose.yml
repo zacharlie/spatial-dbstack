@@ -262,7 +262,7 @@ services:
       # - loki
 
   watchdog:
-    image: dbstack/geo-watcher
+    image: zacharlie/dbstack-watchdog
     build:
       args:
         TARGET: "/data/vector"
@@ -281,7 +281,7 @@ services:
 
   monitor:
     # image: louislam/uptime-kuma
-    image: dbstack/uptime-kuma
+    image: zacharlie/dbstack-monitor
     build:
       context: .
       dockerfile: uptime-kuma-dockerfile
