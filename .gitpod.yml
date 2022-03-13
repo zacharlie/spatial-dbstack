@@ -20,3 +20,10 @@ vscode:
     - redhat.vscode-yaml
     - ms-azuretools.vscode-docker
     - ms-vscode.live-server
+
+github:
+  prebuilds:
+    pullRequests: false
+    pullRequestsFromForks: false
+    addComment: false
+    addBadge: false
