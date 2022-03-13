@@ -1,9 +1,10 @@
 tasks:
-  - init: |
+  - before: |
       chmod +x ./setup.sh
       ./setup.sh
-      docker-compose pull
+  - init: |
       docker-compose build --parallel --force-rm --no-cache
+      docker-compose pull
   - command: |
       docker-compose up
 ports:
