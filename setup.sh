@@ -22,6 +22,10 @@ useradd -u 33333 -G $(id -g) gitpod
 chown $this_user:$this_group $THISDIR/config/ssl/dbstack.crt
 chown $this_user:$this_group $THISDIR/config/ssl/dbstack.key
 
+# yolo for debug
+chmod 777 $THISDIR/config/ssl/dbstack.key
+chmod 777 $THISDIR/config/ssl/dbstack.crt
+
 # write out variables/ results to config/secrets file that users can review
 secrets_file=$THISDIR/secrets/secrets
 echo > $secrets_file
