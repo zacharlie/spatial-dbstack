@@ -18,10 +18,11 @@ chown $this_user:$this_group $secrets_file
 echo "System Secrets" > $secrets_file  # instantiate with header
 
 # bcrypt password for filemanager
+FILES_CONF=$THISDIR/config/filebrowser/filebrowser.json
 FILES_PW=sEi4uA89V0i7pio0KFyW
 echo "FILES_PW: ${FILES_PW}" >> $secrets_file
-# htpasswd -bnBC 10 "" password | tr -d ':\n' | sed 's/$2y/$2a/'
-# sed -i "s/^\"password\".*/\"password\"\: \"${passwordvar}\"/g" $THISDIR/config/filebrowser/filebrowser.json
+FILES_PW_HASH=`htpasswd -bnBC 10 "" ${FILES_PW} | tr -d ':\n' | sed 's/$2y/$2a/'`
+sed -i "s/^\"password\".*/\"password\"\: \"${FILES_PW_HASH}\"/g" $FILES_CONF
 
 # Set secrets and add to secrets file
 WEB_U=dbstack
@@ -69,7 +70,7 @@ cp $THISDIR/config/kuma/kuma.db.example $KUMA_DB
 KUMA_PW=$(pwgen -s 64 1)
 echo "KUMA_PW: ${KUMA_PW}" >> $secrets_file
 # Get password as bcrypt hash value
-KUMA_PW=`htpasswd -bnBC 10 "" ${KUMA_PW} | tr -d ':\n' | sed 's/$2y/$2a/'`
+KUMA_PW_HASH=`htpasswd -bnBC 10 "" ${KUMA_PW} | tr -d ':\n' | sed 's/$2y/$2a/'`
 
 # Set unique JWT secret
 KUMA_JWT=`htpasswd -bnBC 10 "" $(pwgen -s 64 1) | tr -d ':\n' | sed 's/$2y/$2a/'`
@@ -78,7 +79,7 @@ KUMA_JWT=`htpasswd -bnBC 10 "" $(pwgen -s 64 1) | tr -d ':\n' | sed 's/$2y/$2a/'
 KUMA_SQL="
 UPDATE user
 SET \"username\" = 'dbstack',
-    \"password\" = '${KUMA_PW}'
+    \"password\" = '${KUMA_PW_HASH}'
 WHERE
     \"username\" = 'dbstack'
 LIMIT 1;
