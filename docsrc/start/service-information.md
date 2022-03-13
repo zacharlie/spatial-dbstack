@@ -16,9 +16,9 @@ The spatial dbstack includes the following components:
 
 Some examples of how to use geodata services via endpoints:
 
-- Query the rest API: `https://127.0.0.1/rest/ne_10m_admin_0_countries?id=lt.10`
+- Query the rest API: `https://127.0.0.1/rest/sample_countries?id=lt.10`
 - Feature Service GetCapabilities: `https://127.0.0.1/web/?SERVICE=WFS&REQUEST=GetCapabilities&ACCEPTVERSIONS=2.0.0,1.1.0,1.0.0`
-- Retrieve vector tiles: `https://127.0.0.1/tiles/publish.ne_10m_admin_0_countries/{z}/{x}/{y}.pbf`
+- Retrieve vector tiles: `https://127.0.0.1/tiles/publish.sample_countries/{z}/{x}/{y}.pbf`
 
 ## Service Details
 

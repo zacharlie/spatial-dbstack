@@ -45,7 +45,7 @@ Retrieve objects with specified fields
 
 ```js
 {
-  allNe10MAdmin0Countries {
+  allSampleCountries {
     edges {
       node {
         id
@@ -60,7 +60,7 @@ Named query
 
 ```js
 query getCountries {
-  allNe10MAdmin0Countries {
+  allSampleCountries {
     nodes {
       id
       name
@@ -73,7 +73,7 @@ Retrieve item by id
 
 ```js
 {
-  ne10MAdmin0CountryById (id: 6) {
+  sampleCountryById (id: 6) {
     name
   }
 }
@@ -83,7 +83,7 @@ Retrieve object with conditional filter
 
 ```js
 {
-  allNe10MAdmin0Countries(condition: {name: "Argentina"}) {
+  allSampleCountries(condition: {name: "Lesotho"}) {
     edges {
       node {
         id
