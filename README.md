@@ -2,9 +2,11 @@
 
 The Spatial DBStack is a simple and opinionated docker-compose based stack for PostgreSQL that provides an enterprise-ready database solution with additional stack components for monitoring, administration, and publication.
 
-Development is focussed on providing an easy to use spatial database services that is secure by default and provides enough functionality OOTB to allow sophisticated spatial applications to be developed without wrangling infrastructure or architecture.
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/zacharlie/spatial-dbstack)
 
 > **Pre-Alpha warning**: this will eat your homework
+
+Development is focussed on providing an easy to use spatial database that is reasonably secure by default, and provides enough functionality [OOTB](<https://en.wikipedia.org/wiki/Out_of_the_box_(feature)>) with preconfigured associated services to allow sophisticated spatial applications to be developed without wrangling infrastructure or architecture.
 
 It's optimized for utilization with spatial data by providing spatial service APIs, and is based on the [kartoza/docker-postgis](https://github.com/kartoza/docker-postgis) image.
 
@@ -42,13 +44,14 @@ For the nginx authorization system to work, an authorization file `config/nginx/
 
 A new password can be generated using the command `sudo htpasswd -c ./webusers <username>`. Note that htpasswd may require installation (`apache2-utils` for debian, `httpd-tools` for rhel etc).
 
-Default Username-Password Combo:
+Default Web Admin Username-Password Combo:
 
-`dbstack` `vZLqAMychaH4nBwfOtTb`
+- `dbstack`
+- `vZLqAMychaH4nBwfOtTb`
 
-Change these please. Note that the uptime service stores the password in the database and will need to be reset from the UI.
+The other service passwords are randomly generated and added to a secrets file available from the file browser.
 
-The Filebrowser username default is admin. This app doesn't allow configuration of the superuser account name with the config file.
+The Filebrowser username default is `admin` and the password is `sEi4uA89V0i7pio0KFyW`. This app doesn't allow configuration of the superuser account name with the config file. A secrets file will be ade available
 
 ## Known issues
 
@@ -148,8 +151,8 @@ At this point in time, meaningful templates and dashboards for graphana are high
 Before it gets to a 0.1 release, the following changes are intended:
 
 - Complete a functional version of setup.sh that handles config and secrets properly
-- Replace nginx system with traefik for reverse proxy
-- Properly configure SSL using setup option of self signed, letsencrypt, or use certs
+- Planned replacement nginx system with traefik for reverse proxy
+- Properly configure SSL using setup option of self signed, letsencrypt, or user supplied certs
 - Fix up container logging using promtail
 - Include [postgres_exporter](https://github.com/prometheus-community/postgres_exporter) for db metrics monitoring (and example of including custom pg extensions)
 - Include db function for calling data importing processes
@@ -163,7 +166,7 @@ Before it gets to a 0.1 release, the following changes are intended:
 The release after will focus on these steps:
 
 - Add reasonable defaults for deployment config (container replicas etc)
-- customise the postgresql schema search path, so that elements in "publish" rather than "public" are available by default
+- Customise the postgresql schema search path, so that elements in "publish" rather than "public" are available by default
 - Create a functional branding script which customises systems to reflect a corporate identity (where possible - this won't be magic)
 - Create a functional cleanup.sh which purges example data and samples from the system to allow for a clean start
 - Reasonable examples and sample resources that show how it can be effectively leveraged, extended, or further configured

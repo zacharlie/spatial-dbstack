@@ -52,6 +52,6 @@ GRANT USAGE ON ALL SEQUENCES IN SCHEMA publish TO web;
 ALTER DEFAULT PRIVILEGES IN SCHEMA publish GRANT USAGE ON SEQUENCES TO web;
 
 -- Create a dedicated user and assign the user to the correct permissions to the role
-CREATE ROLE api_user login PASSWORD 'secure_password';
+CREATE ROLE api_user login PASSWORD '{{API_USER_PASSWORD}}';
 
 GRANT web TO api_user;

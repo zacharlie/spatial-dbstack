@@ -1,62 +1,94 @@
-#!/usr/bin/env bash
-:'
-# expects sudo caching enabled
-if [ "$EUID" = 0 ]; then
-  echo "Running with super user privileges"
-else
-    sudo -k # ask for password
-    if sudo true; then
-        echo "Correct password entered."
-    else
-        echo "Wrong password. Exiting."
-        exit 1
-    fi
-fi
+#!/bin/bash
 
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-# groupadd docker
-# usermod -aG docker $(id -u)
-# chown -R $(id -u):$(id -g docker) $THISDIR/config
-# chown -R 1000:1000 $THISDIR/config
-# chmod +x $THISDIR/config/ssl/generate-dhparam.sh
-# $THISDIR/generate-dhparam.sh
-# chmod +x $THISDIR/config/ssl/generate-sscerts.sh
-# $THISDIR/generate-sscerts.sh
+this_user=$(id -u)
+this_group=$(id -g)
 
-apt update && apt upgrade -y && docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
-
-cp $THISDIR/.env.example $THISDIR/.env
-
-WEBU="dbstack"
-WEBPW="vZLqAMychaH4nBwfOtTb"
-DBUSER="dbstack"
-# DBPW="$(pwgen -s 64 1)"
-DBPW="secure_password"
-
-# htpasswd -b -B -C10 -c $THISDIR/config/nginx/webusers username password
-
+chown -R $this_user:$this_group $THISDIR/data
+chmod +x $THISDIR/config/ssl/generate-dhparam.sh
+$THISDIR/config/ssl/generate-dhparam.sh
+chmod +x $THISDIR/config/ssl/generate-sscerts.sh
+$THISDIR/config/ssl/generate-sscerts.sh
 
 # write out variables/ results to config/secrets file that users can review
-echo "System Secrets" > $THISDIR/config/secrets
-echo "WEBU: ${WEBU}" >> $THISDIR/config/secrets
-echo "WEBPW: ${WEBPW}" >> $THISDIR/config/secrets
-echo "DBUSER: ${DBUSER}" >> $THISDIR/config/secrets
-echo "DBPW: ${DBPW}" >> $THISDIR/config/secrets
+secrets_file=$THISDIR/secrets/secrets
+echo > $secrets_file
+chown $this_user:$this_group $secrets_file
+echo "System Secrets" > $secrets_file  # instantiate with header
 
-sed -i "s/^PGRST_DB_USER=.*/PGRST_DB_USER=$DBUSER/g" $THISDIR/.env
-sed -i "s/^PGRST_DB_PASS=.*/PGRST_DB_PASS=$DBPW/g" $THISDIR/.env
-sed -i "s/^GRAFANA_ADMIN_USER=.*/GRAFANA_ADMIN_USER=$WEBU/g" $THISDIR/.env
-sed -i "s/^GRAFANA_ADMIN_PASS=.*/GRAFANA_ADMIN_USER=$WEBPW/g" $THISDIR/.env
-
-cp $THISDIR/config/kuma/kuma.db.example $THISDIR/config/kuma/kuma.db
-
-# sqlite3 database.db "$sql"
-# kuma/kuma.db setting.key = jwtSecret
-# kuma/kuma.db setting.key = primaryBaseURL (value="http://127.0.0.1:3001/uptime"	type=general)
-# kuma/kuma.db user id=1 username=dbstack password=hash
-#
 # bcrypt password for filemanager
+FILES_PW=sEi4uA89V0i7pio0KFyW
+echo "FILES_PW: ${FILES_PW}" >> $secrets_file
 # htpasswd -bnBC 10 "" password | tr -d ':\n' | sed 's/$2y/$2a/'
 # sed -i "s/^\"password\".*/\"password\"\: \"${passwordvar}\"/g" $THISDIR/config/filebrowser/filebrowser.json
 
+# Set secrets and add to secrets file
+WEB_U=dbstack
+WEB_PW=vZLqAMychaH4nBwfOtTb
+DB_USER=dbstack
+DB_PW=$(pwgen -s 64 1)
+PGRST_U=api_user
+PGRST_PW=$(pwgen -s 64 1)
+PGADMIN_U=dbstack@local.host
+PGADMIN_PW=$(pwgen -s 64 1)
+GRAFANA_ADMIN_USER=${WEB_U}
+GRAFANA_ADMIN_PASS=${WEB_PW}
+
+echo "WEB_U: ${WEBU}" >> $secrets_file
+echo "WEB_PW: ${WEBPW}" >> $secrets_file
+echo "DB_USER: ${DBUSER}" >> $secrets_file
+echo "DB_PW: ${DBPW}" >> $secrets_file
+echo "PGRST_U: ${PGRST_U}" >> $secrets_file
+echo "PGRST_PW: ${PGRST_PW}" >> $secrets_file
+echo "PGADMIN_U: ${PGADMIN_U}" >> $secrets_file
+echo "PGADMIN_PW: ${PGADMIN_PW}" >> $secrets_file
+echo "GRAFANA_ADMIN_USER: ${GRAFANA_ADMIN_USER}" >> $secrets_file
+echo "GRAFANA_ADMIN_PASS: ${GRAFANA_ADMIN_PASS}" >> $secrets_file
+
+# create web users
+htpasswd -b -B -C10 -c $THISDIR/config/nginx/webusers ${WEB_U} ${WEB_PW}
+# htpasswd -b -B -C10 $THISDIR/config/nginx/webusers ${GRAFANA_ADMIN_USER} ${GRAFANA_ADMIN_PASS}  # currently duplicates web user
+
+# Copy ENV and configure secrets
+cp $THISDIR/.env.example $THISDIR/.env
+sed -i "s/^POSTGRES_USER=.*/POSTGRES_USER=$DBUSER/g" $THISDIR/.env
+sed -i "s/^POSTGRES_PASS=.*/POSTGRES_PASS=$DBPW/g" $THISDIR/.env
+sed -i "s/^PGRST_DB_USER=.*/PGRST_DB_USER=$PGRST_U/g" $THISDIR/.env
+sed -i "s/^PGRST_DB_PASS=.*/PGRST_DB_PASS=$PGRST_PW/g" $THISDIR/.env
+sed -i "s/^GRAFANA_ADMIN_USER=.*/GRAFANA_ADMIN_USER=$GRAFANA_ADMIN_USER/g" $THISDIR/.env
+sed -i "s/^GRAFANA_ADMIN_PASS=.*/GRAFANA_ADMIN_USER=$GRAFANA_ADMIN_PASS/g" $THISDIR/.env
+
+# Replace sensitive data in SQL files
+sed -i "s/'{{API_USER_PASSWORD}}'/'${PGRST_PW}'/g" $THISDIR/config/sql/setup.sql
+
+# configure uptime kuma using sample database as a template
+KUMA_DB=$THISDIR/config/kuma/kuma.db
+cp $THISDIR/config/kuma/kuma.db.example $KUMA_DB
+
+KUMA_PW=$(pwgen -s 64 1)
+echo "KUMA_PW: ${KUMA_PW}" >> $secrets_file
+# Get password as bcrypt hash value
+KUMA_PW=`htpasswd -bnBC 10 "" ${KUMA_PW} | tr -d ':\n' | sed 's/$2y/$2a/'`
+
+# Set unique JWT secret
+KUMA_JWT=`htpasswd -bnBC 10 "" $(pwgen -s 64 1) | tr -d ':\n' | sed 's/$2y/$2a/'`
+# echo "KUMA_JWT: ${KUMA_JWT}" >> $secrets_file
+
+KUMA_SQL="
+UPDATE user
+SET \"username\" = 'dbstack',
+    \"password\" = '${KUMA_PW}'
+WHERE
+    \"username\" = 'dbstack'
+LIMIT 1;
+
+UPDATE setting
+SET \"jwtSecret\" = '${KUMA_JWT}'
+WHERE
+    \"key\" = 'jwtSecret'
+LIMIT 1;
+"
+
+# execute sql
+sqlite3 $KUMA_DB $KUMA_SQL
