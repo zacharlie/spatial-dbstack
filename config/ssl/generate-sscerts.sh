@@ -23,4 +23,4 @@ else
 fi
 
 echo "Generating self signed TLS certificate pair."
-sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $OUTKEY -out $OUTCRT
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout $OUTKEY -out $OUTCRT -subj "/C=/ST=/L=/O=/OU=/CN="
