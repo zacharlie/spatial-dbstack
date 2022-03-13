@@ -1,0 +1,23 @@
+tasks:
+  - init: |
+      chmod +x setup.sh
+      setup.sh
+      docker-compose pull
+      docker-compose build --parallel --force-rm --no-cache
+  - command: |
+      docker-compose up
+ports:
+  - port: 80
+    onOpen: ignore
+  - port: 443
+    onOpen: open-browser
+  - port: 14259
+    onOpen: ignore
+
+vscode:
+  extensions:
+    - redhat.vscode-yaml
+    - ms-azuretools.vscode-docker
+    - eamodio.gitlens
+    - ms-vscode.live-server
+    - ms-toolsai.jupyter
