@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# provisioning for gitpod
+install-packages apt-transport-https ca-certificates gnupg pwgen openssl apache2-utils sqlite3
+
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Exclude files from git that might leak sensitive info after setup
