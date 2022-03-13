@@ -25,9 +25,3 @@ data/**
 !data/**/
 !data/**/.gitkeep
 !data/vector/README.md
-!data/vector/sample_countries.dbf
-!data/vector/sample_countries.prj
-!data/vector/sample_countries.shp
-!data/vector/sample_countries.shx
-!data/vector/sample_gpkg.gpkg
-!data/vector/sample_populated_places_simple.geojson
