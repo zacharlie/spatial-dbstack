@@ -20,4 +20,5 @@ else
 fi
 
 echo "Generating Diffie-Hellman parameters for OpenSSL."
-sudo openssl dhparam -out $THISDIR/dhparam.pem 4096
+# sudo openssl dhparam -out $THISDIR/dhparam.pem 4096
+sudo openssl dhparam -out $THISDIR/dhparam.pem 128  # for testing on gitpod
