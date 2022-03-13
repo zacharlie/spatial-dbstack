@@ -2,6 +2,11 @@
 
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+# Exclude files from git that might leak sensitive info after setup
+git update-index --skip-worktree $THISDIR/config/nginx/webusers
+git update-index --skip-worktree $THISDIR/config/sql/setup.sql
+# to reverse this action, simply `git update-index --no-skip-worktree <file>`
+
 this_user=$(id -u)
 this_group=$(id -g)
 
