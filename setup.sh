@@ -11,6 +11,12 @@ $THISDIR/config/ssl/generate-dhparam.sh
 chmod +x $THISDIR/config/ssl/generate-sscerts.sh
 $THISDIR/config/ssl/generate-sscerts.sh
 
+# add gitpod user to current group
+usermod -a -G $(id -g) 3333
+# make sure certs are readable by gitpod user
+chown -R $this_user:$this_group $THISDIR/config/ssl/dbstack.crt
+chown -R $this_user:$this_group $THISDIR/config/ssl/dbstack.key
+
 # write out variables/ results to config/secrets file that users can review
 secrets_file=$THISDIR/secrets/secrets
 echo > $secrets_file
