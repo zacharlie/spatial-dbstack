@@ -254,6 +254,7 @@ services:
       # - ./config:/files/config
       - ./data:/files/data
       - ./secrets:/files/secrets
+      - db-backup:/files/backup
     user: ${CURRENT_UID}
     # logging: *loki-logging
     expose:
