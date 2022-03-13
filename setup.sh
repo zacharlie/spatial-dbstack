@@ -1,14 +1,26 @@
 #!/bin/bash
 
+if [ "$EUID" = 0 ]; then
+  echo "Running with super user privileges"
+else
+    # expects sudo caching enabled
+    sudo -k # ask for password
+    if sudo true; then
+        echo "Correct password entered."
+    else
+        echo "Wrong password. Exiting."
+        exit 1
+    fi
+fi
+
 # provisioning for gitpod
 install-packages apt-transport-https ca-certificates gnupg pwgen openssl apache2-utils sqlite3
 
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 # Exclude files from git that might leak sensitive info after setup
-git update-index --skip-worktree $THISDIR/config/nginx/webusers
-git update-index --skip-worktree $THISDIR/config/sql/setup.sql
-# to reverse this action, simply `git update-index --no-skip-worktree <file>`
+git update-index --assume-unchanged $THISDIR/config/nginx/webusers
+git update-index --assume-unchanged $THISDIR/config/sql/setup.sql
 
 this_user=$(id -u)
 this_group=$(id -g)
@@ -18,16 +30,6 @@ chmod +x $THISDIR/config/ssl/generate-dhparam.sh
 $THISDIR/config/ssl/generate-dhparam.sh
 chmod +x $THISDIR/config/ssl/generate-sscerts.sh
 $THISDIR/config/ssl/generate-sscerts.sh
-
-# add gitpod user to current group
-useradd -u 33333 -G $(id -g) gitpod
-# make sure certs are readable by gitpod user
-chown $this_user:$this_group $THISDIR/config/ssl/dbstack.crt
-chown $this_user:$this_group $THISDIR/config/ssl/dbstack.key
-
-# yolo for debug
-chmod 777 $THISDIR/config/ssl/dbstack.key
-chmod 777 $THISDIR/config/ssl/dbstack.crt
 
 # write out variables/ results to config/secrets file that users can review
 secrets_file=$THISDIR/secrets/secrets
@@ -76,7 +78,7 @@ sed -i "s/^POSTGRES_PASS=.*/POSTGRES_PASS=$DBPW/g" $THISDIR/.env
 sed -i "s/^PGRST_DB_USER=.*/PGRST_DB_USER=$PGRST_U/g" $THISDIR/.env
 sed -i "s/^PGRST_DB_PASS=.*/PGRST_DB_PASS=$PGRST_PW/g" $THISDIR/.env
 sed -i "s/^GRAFANA_ADMIN_USER=.*/GRAFANA_ADMIN_USER=$GRAFANA_ADMIN_USER/g" $THISDIR/.env
-sed -i "s/^GRAFANA_ADMIN_PASS=.*/GRAFANA_ADMIN_USER=$GRAFANA_ADMIN_PASS/g" $THISDIR/.env
+sed -i "s/^GRAFANA_ADMIN_PASS=.*/GRAFANA_ADMIN_PASS=$GRAFANA_ADMIN_PASS/g" $THISDIR/.env
 
 # Replace sensitive data in SQL files
 sed -i "s/'{{API_USER_PASSWORD}}'/'${PGRST_PW}'/g" $THISDIR/config/sql/setup.sql

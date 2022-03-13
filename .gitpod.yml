@@ -1,11 +1,11 @@
 tasks:
   - before: |
       chmod +x ./setup.sh
-      ./setup.sh
+      sudo ./setup.sh
   - init: |
-      docker-compose pull
+      sudo docker-compose pull
   - command: |
-      docker-compose up
+      sudo docker-compose up
 ports:
   - port: 80
     onOpen: ignore
