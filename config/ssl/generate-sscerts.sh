@@ -4,8 +4,8 @@
 
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-OUTKEY="$THISDIR/nginx-selfsigned.key"
-OUTCRT="$THISDIR/nginx-selfsigned.crt"
+OUTKEY="$THISDIR/dbstack.key"
+OUTCRT="$THISDIR/dbstack.crt"
 
 cd "$THISDIR"
 
