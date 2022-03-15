@@ -5,9 +5,9 @@ site_description: >-
   User docs for the spatial dbstack
 repo_name: dbstack
 repo_url: https://github.com/zacharlie/spatial-dbstack
-edit_uri: "https://github.com/zacharlie/spatial-dbstack/blob/main/docsrc/"
+edit_uri: "https://github.com/zacharlie/spatial-dbstack/blob/main/mkdocs/src/"
 
-docs_dir: docsrc
+docs_dir: mkdocs/src
 site_dir: docs
 
 # Copyright
