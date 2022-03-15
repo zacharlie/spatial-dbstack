@@ -318,6 +318,7 @@ services:
       - ./config/nginx/webusers:/etc/nginx/.htpasswd:ro
       - ./config/ssl/:/etc/nginx/ssl/
       - ./config/www/:/usr/share/nginx/html/www/
+      - ./docs:/usr/share/nginx/html/www/docs/
     # logging: *loki-logging
     logging: *json-logging
     restart: always
