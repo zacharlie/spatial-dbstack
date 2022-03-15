@@ -13,8 +13,15 @@ else
     fi
 fi
 
-# provisioning for gitpod
-install-packages apt-transport-https ca-certificates gnupg pwgen openssl apache2-utils sqlite3
+# install dependencies
+# check for gitpod user
+if id "gitpod" &>/dev/null; then
+    echo 'provisioning for gitpod'
+    install-packages apt-transport-https ca-certificates gnupg pwgen openssl apache2-utils sqlite3
+else
+    echo 'setup dependencies'
+    apt update && apt-transport-https ca-certificates gnupg pwgen openssl apache2-utils sqlite3
+fi
 
 THISDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
