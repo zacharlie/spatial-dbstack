@@ -56,10 +56,10 @@ PGADMIN_PW=$(pwgen -s 64 1)
 GRAFANA_ADMIN_USER=${WEB_U}
 GRAFANA_ADMIN_PASS=${WEB_PW}
 
-echo "WEB_U: ${WEBU}" >> $secrets_file
-echo "WEB_PW: ${WEBPW}" >> $secrets_file
-echo "DB_USER: ${DBUSER}" >> $secrets_file
-echo "DB_PW: ${DBPW}" >> $secrets_file
+echo "WEB_U: ${WEB_U}" >> $secrets_file
+echo "WEB_PW: ${WEB_PW}" >> $secrets_file
+echo "DB_USER: ${DB_USER}" >> $secrets_file
+echo "DB_PW: ${DB_PW}" >> $secrets_file
 echo "PGRST_U: ${PGRST_U}" >> $secrets_file
 echo "PGRST_PW: ${PGRST_PW}" >> $secrets_file
 echo "PGADMIN_U: ${PGADMIN_U}" >> $secrets_file
@@ -73,8 +73,8 @@ htpasswd -b -B -C10 -c $THISDIR/config/nginx/webusers ${WEB_U} ${WEB_PW}
 
 # Copy ENV and configure secrets
 cp $THISDIR/.env.example $THISDIR/.env
-sed -i "s/^POSTGRES_USER=.*/POSTGRES_USER=$DBUSER/g" $THISDIR/.env
-sed -i "s/^POSTGRES_PASS=.*/POSTGRES_PASS=$DBPW/g" $THISDIR/.env
+sed -i "s/^POSTGRES_USER=.*/POSTGRES_USER=$DB_USER/g" $THISDIR/.env
+sed -i "s/^POSTGRES_PASS=.*/POSTGRES_PASS=$DB_PW/g" $THISDIR/.env
 sed -i "s/^PGRST_DB_USER=.*/PGRST_DB_USER=$PGRST_U/g" $THISDIR/.env
 sed -i "s/^PGRST_DB_PASS=.*/PGRST_DB_PASS=$PGRST_PW/g" $THISDIR/.env
 sed -i "s/^GRAFANA_ADMIN_USER=.*/GRAFANA_ADMIN_USER=$GRAFANA_ADMIN_USER/g" $THISDIR/.env
