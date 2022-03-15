@@ -25,3 +25,7 @@ data/**
 !data/**/
 !data/**/.gitkeep
 !data/vector/README.md
+# exclude logs, include dirs
+logs/**
+!logs/**/
+!logs/**/.gitkeep
