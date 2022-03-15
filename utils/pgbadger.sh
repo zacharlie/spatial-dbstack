@@ -1,0 +1,1 @@
+docker run --rm -v ./logs/pgbadger:/data -v ./logs/pg_log:/logs -e PGBADGER_DATA=/data uphold/pgbadger /logs/postgresql.log --jobs 4 --outdir /data postgresql-%Y-%m-%d_%H%M%S.log
