@@ -1,3 +1,20 @@
+-- grant all explicit to api_user (workaround)
+GRANT CONNECT ON DATABASE analysis TO api_user;
+
+GRANT USAGE ON SCHEMA publish TO api_user;
+
+GRANT
+SELECT
+  ON ALL TABLES IN SCHEMA publish TO api_user;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA publish GRANT
+SELECT
+  ON TABLES TO api_user;
+
+GRANT USAGE ON ALL SEQUENCES IN SCHEMA publish TO api_user;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA publish GRANT USAGE ON SEQUENCES TO api_user;
+
 CREATE
 OR REPLACE FUNCTION RefreshAllMaterializedViews(schema_arg TEXT DEFAULT 'public') RETURNS INT AS $ $ DECLARE r RECORD;
 
