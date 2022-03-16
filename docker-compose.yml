@@ -21,37 +21,37 @@ volumes:
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: './data/volumes/log-data'
+      device: '${PWD}/data/volumes/log-data'
   postgis-data:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: './data/volumes/postgis-data'
+      device: '${PWD}/data/volumes/postgis-data'
   db-backup:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: './data/volumes/db-backup'
+      device: '${PWD}/data/volumes/db-backup'
   pg-admin-data:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: './data/volumes/pg-admin-data'
+      device: '${PWD}/data/volumes/pg-admin-data'
   grafana-data:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: './data/volumes/grafana-data'
+      device: '${PWD}/data/volumes/grafana-data'
   uptime-kuma-data:
     driver: local
     driver_opts:
       type: 'none'
       o: 'bind'
-      device: './data/volumes/uptime-kuma-data'
+      device: '${PWD}/data/volumes/uptime-kuma-data'
 
 services:
   loki:
@@ -61,8 +61,8 @@ services:
       - 3100
     volumes:
       - log-data:/var/log
-      - ./config/loki/loki-local-config.yaml:/etc/loki/local-config.yaml
-      - ./config/loki/rules:/loki/rules
+      - ${PWD}/config/loki/loki-local-config.yaml:/etc/loki/local-config.yaml
+      - ${PWD}/config/loki/rules:/loki/rules
 
   db:
     image: kartoza/postgis:${POSTGRES_MAJOR_VERSION}-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_RELEASE}
@@ -70,11 +70,11 @@ services:
     volumes:
       - postgis-data:/var/lib/postgresql
       - db-backup:/backups
-      - ./config/sql/database_setup.sh:/docker-entrypoint-initdb.d/database_setup.sh:ro
-      - ./config/db/extra.conf:/settings/extra.conf
-      - ./config/sql:/sql:ro
-      - ./logs/pg_log:/var/lib/postgresql/data/pg_log
-      - ./data:/data
+      - ${PWD}/config/sql/database_setup.sh:/docker-entrypoint-initdb.d/database_setup.sh:ro
+      - ${PWD}/config/db/extra.conf:/settings/extra.conf
+      - ${PWD}/config/sql:/sql:ro
+      - ${PWD}/logs/pg_log:/var/lib/postgresql/data/pg_log
+      - ${PWD}/data:/data
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
       - POSTGRES_USER=${POSTGRES_USER}
@@ -200,7 +200,7 @@ services:
     image: pramsey/pg_featureserv
     command: --config /etc/pg_featureserv.toml
     volumes:
-      - ./config/apis/pg_featureserv.toml:/etc/pg_featureserv.toml
+      - ${PWD}/config/apis/pg_featureserv.toml:/etc/pg_featureserv.toml
     environment:
       - DATABASE_URL=postgresql://${PGRST_DB_USER}:${PGRST_DB_PASS}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=${SSL_MODE}
       # logging: *loki-logging
@@ -216,7 +216,7 @@ services:
     image: pramsey/pg_tileserv
     command: --config /etc/pg_tileserv.toml
     volumes:
-      - ./config/apis/pg_tileserv.toml:/etc/pg_tileserv.toml
+      - ${PWD}/config/apis/pg_tileserv.toml:/etc/pg_tileserv.toml
     environment:
       - DATABASE_URL=postgresql://${PGRST_DB_USER}:${PGRST_DB_PASS}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=${SSL_MODE}
       # logging: *loki-logging
@@ -241,7 +241,7 @@ services:
       - SERVER_URL=${SERVER_URL} # used in config for proxy
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./config/grafana/:/etc/grafana/
+      - ${PWD}/config/grafana/:/etc/grafana/
     # logging: *loki-logging
     expose:
       - 3000
@@ -253,7 +253,7 @@ services:
     command: -config.file=/etc/promtail/promtail-config.yaml
     volumes:
       - log-data:/var/log
-      - ./config/prom/promtail-docker-config.yaml:/etc/promtail/promtail-config.yaml
+      - ${PWD}/config/prom/promtail-docker-config.yaml:/etc/promtail/promtail-config.yaml
     # logging: *loki-logging
     expose:
       - 9080
@@ -269,7 +269,7 @@ services:
       # - --web.external-url=${SERVER_URL}/prometheus/
       - --web.route-prefix=/prometheus/
     volumes:
-      - ./config/prom/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ${PWD}/config/prom/prometheus.yml:/etc/prometheus/prometheus.yml
     # logging: *loki-logging
     expose:
       - 9090
@@ -279,12 +279,12 @@ services:
   filebrowser:
     image: filebrowser/filebrowser
     volumes:
-      - ./config/filebrowser/filebrowser.json:/.filebrowser.json
-      - ./config/filebrowser/:/config
+      - ${PWD}/config/filebrowser/filebrowser.json:/.filebrowser.json
+      - ${PWD}/config/filebrowser/:/config
       # filebrowser user will need permissions on specific folders
-      # - ./config:/files/config
-      - ./data:/files/data
-      - ./secrets:/files/secrets
+      # - ${PWD}/config:/files/config
+      - ${PWD}/data:/files/data
+      - ${PWD}/secrets:/files/secrets
       - db-backup:/files/backup
     user: ${CURRENT_UID}
     # logging: *loki-logging
@@ -307,7 +307,7 @@ services:
       - POSTGRES_PASS=${POSTGRES_PASS}
       - SCHEMAS=${PGRST_DB_SCHEMAS}
     volumes:
-      - "./data/vector:/data/vector"
+      - "${PWD}/data/vector:/data/vector"
     depends_on:
       - db
 
@@ -318,7 +318,7 @@ services:
       context: .
       dockerfile: uptime-kuma-dockerfile
     volumes:
-      - ./config/kuma:/app/data
+      - ${PWD}/config/kuma:/app/data
     environment:
       - BASE_PATH=/uptime/
       - UPTIME_KUMA_BASE_PATH=/uptime/
@@ -344,11 +344,11 @@ services:
   nginx:
     image: nginx
     volumes:
-      - ./config/nginx/sites-enabled:/etc/nginx/conf.d:ro
-      - ./config/nginx/webusers:/etc/nginx/.htpasswd:ro
-      - ./config/ssl/:/etc/nginx/ssl/
-      - ./config/www/:/usr/share/nginx/html/www/
-      - ./docs:/usr/share/nginx/html/www/docs/
+      - ${PWD}/config/nginx/sites-enabled:/etc/nginx/conf.d:ro
+      - ${PWD}/config/nginx/webusers:/etc/nginx/.htpasswd:ro
+      - ${PWD}/config/ssl/:/etc/nginx/ssl/
+      - ${PWD}/config/www/:/usr/share/nginx/html/www/
+      - ${PWD}/docs:/usr/share/nginx/html/www/docs/
     # logging: *loki-logging
     logging: *json-logging
     restart: always

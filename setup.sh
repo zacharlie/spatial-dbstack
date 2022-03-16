@@ -78,8 +78,11 @@ echo "GRAFANA_ADMIN_PASS: ${GRAFANA_ADMIN_PASS}" >> $secrets_file
 htpasswd -b -B -C10 -c $THISDIR/config/nginx/webusers ${WEB_U} ${WEB_PW}
 # htpasswd -b -B -C10 $THISDIR/config/nginx/webusers ${GRAFANA_ADMIN_USER} ${GRAFANA_ADMIN_PASS}  # currently duplicates web user
 
-# Copy ENV and configure secrets
+# Copy ENV
 cp $THISDIR/.env.example $THISDIR/.env
+sed -i "s/^PWD=.*/PWD=$THISDIR/g" $THISDIR/.env
+
+#configure secrets
 sed -i "s/^POSTGRES_USER=.*/POSTGRES_USER=$DB_USER/g" $THISDIR/.env
 sed -i "s/^POSTGRES_PASS=.*/POSTGRES_PASS=$DB_PW/g" $THISDIR/.env
 sed -i "s/^PGRST_DB_USER=.*/PGRST_DB_USER=$PGRST_U/g" $THISDIR/.env
