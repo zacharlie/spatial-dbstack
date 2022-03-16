@@ -43,7 +43,7 @@ services:
       - ./config/sql/database_setup.sh:/docker-entrypoint-initdb.d/database_setup.sh:ro
       - ./config/db/extra.conf:/settings/extra.conf
       - ./config/sql:/sql:ro
-      - ./logs/pg_log:var/lib/postgresql/data/pg_log
+      - ./logs/pg_log:/var/lib/postgresql/data/pg_log
       - ./data:/data
     environment:
       - POSTGRES_DB=${POSTGRES_DB}
