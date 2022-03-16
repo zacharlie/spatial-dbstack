@@ -112,11 +112,11 @@ WHERE
 LIMIT 1;
 
 UPDATE setting
-SET \"jwtSecret\" = '${KUMA_JWT}'
+SET \"value\" = '${KUMA_JWT}'
 WHERE
     \"key\" = 'jwtSecret'
 LIMIT 1;
 "
 
 # execute sql
-sqlite3 $KUMA_DB $KUMA_SQL
+sqlite3 $KUMA_DB "$KUMA_SQL"
