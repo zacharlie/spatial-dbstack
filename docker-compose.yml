@@ -1,12 +1,8 @@
 version: '3.9'
 
 x-logging:
-  # docker plugin install grafana/loki-docker-driver:latest --alias loki --grant-all-permissions
-  # &loki-logging
-  # driver: loki
-  # options:
-  #   loki-url: "http://loki:3100/loki/api/v1/push"
-  #   mode: "non-blocking"
+  &dbstack-logging
+  driver: journald
 
 x-json-logging:
   &json-logging
@@ -63,6 +59,7 @@ services:
       - log-data:/var/log
       - ${PWD}/config/loki/loki-local-config.yaml:/etc/loki/local-config.yaml
       - ${PWD}/config/loki/rules:/loki/rules
+    logging: *dbstack-logging
 
   db:
     image: kartoza/postgis:${POSTGRES_MAJOR_VERSION}-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_RELEASE}
@@ -82,7 +79,7 @@ services:
       - ALLOW_IP_RANGE=${ALLOW_IP_RANGE}
       - POSTGRES_MULTIPLE_EXTENSIONS=${POSTGRES_MULTIPLE_EXTENSIONS}
       - FORCE_SSL=${FORCE_SSL}
-    # logging: *loki-logging
+    logging: *dbstack-logging
     expose:
       - 5432/tcp
     ports:
@@ -93,8 +90,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
-      # depends_on:
-      # - loki
 
   db-backup:
     image: kartoza/pg-backup:${POSTGRES_MAJOR_VERSION}.0
@@ -107,9 +102,8 @@ services:
       - POSTGRES_PASS=${POSTGRES_PASS}
       - POSTGRES_HOST=${POSTGRES_HOST}
       - POSTGRES_PORT=5432
-    # logging: *loki-logging
+    logging: *dbstack-logging
     depends_on:
-      # - loki
       - db
 
   pgadmin:
@@ -125,7 +119,7 @@ services:
       - PGADMIN_SERVER_JSON_FILE=/pgadmin4/servers.json
       # disable password resets
       - PGADMIN_DISABLE_POSTFIX=TRUE
-    # logging: *loki-logging
+    logging: *dbstack-logging
     expose:
       - 80
     healthcheck:
@@ -135,7 +129,6 @@ services:
       retries: 3
       start_period: 40s
     depends_on:
-      # - loki
       - db
 
   postgrest:
@@ -153,11 +146,10 @@ services:
       - PGRST_DB_MAX_ROWS=${PGRST_DB_MAX_ROWS}
       # Values can be "crit","error","warn","info"
       - PGRST_LOG_LEVEL=error
-    # logging: *loki-logging
+    logging: *dbstack-logging
     expose:
       - ${PGRST_SERVER_PORT}
     depends_on:
-      # - loki
       - db
 
   postgraphile:
@@ -176,11 +168,10 @@ services:
         "--cors",
         "--watch"
       ]
-    # logging: *loki-logging
+    logging: *dbstack-logging
     expose:
       - 5000
     depends_on:
-      # - loki
       - db
 
   swagger:
@@ -188,11 +179,10 @@ services:
     environment:
       - API_URL=${SERVER_URL}/rest/
       - BASE_URL=/api
-    # logging: *loki-logging
+    logging: *dbstack-logging
     expose:
       - 8080
     depends_on:
-      # - loki
       - db
       - postgrest
 
@@ -203,14 +193,13 @@ services:
       - ${PWD}/config/apis/pg_featureserv.toml:/etc/pg_featureserv.toml
     environment:
       - DATABASE_URL=postgresql://${PGRST_DB_USER}:${PGRST_DB_PASS}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=${SSL_MODE}
-      # logging: *loki-logging
+    logging: *dbstack-logging
     expose:
       - 9000
     restart: unless-stopped
     depends_on:
       - db
       - pgadmin
-      # - loki
 
   tiles:
     image: pramsey/pg_tileserv
@@ -219,14 +208,13 @@ services:
       - ${PWD}/config/apis/pg_tileserv.toml:/etc/pg_tileserv.toml
     environment:
       - DATABASE_URL=postgresql://${PGRST_DB_USER}:${PGRST_DB_PASS}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=${SSL_MODE}
-      # logging: *loki-logging
+    logging: *dbstack-logging
     expose:
       - 7800
     restart: unless-stopped
     depends_on:
       - db
       - pgadmin
-      # - loki
 
   grafana:
     image: grafana/grafana-oss
@@ -242,11 +230,9 @@ services:
     volumes:
       - grafana-data:/var/lib/grafana
       - ${PWD}/config/grafana/:/etc/grafana/
-    # logging: *loki-logging
+    logging: *dbstack-logging
     expose:
       - 3000
-      # depends_on:
-      # - loki
 
   promtail:
     image: grafana/promtail
@@ -254,11 +240,9 @@ services:
     volumes:
       - log-data:/var/log
       - ${PWD}/config/prom/promtail-docker-config.yaml:/etc/promtail/promtail-config.yaml
-    # logging: *loki-logging
+    logging: *dbstack-logging
     expose:
       - 9080
-      # depends_on:
-      # - loki
 
   prometheus:
     image: prom/prometheus
@@ -270,11 +254,9 @@ services:
       - --web.route-prefix=/prometheus/
     volumes:
       - ${PWD}/config/prom/prometheus.yml:/etc/prometheus/prometheus.yml
-    # logging: *loki-logging
+    logging: *dbstack-logging
     expose:
       - 9090
-      # depends_on:
-      # - loki
 
   filebrowser:
     image: filebrowser/filebrowser
@@ -287,11 +269,9 @@ services:
       - ${PWD}/secrets:/files/secrets
       - db-backup:/files/backup
     user: ${CURRENT_UID}
-    # logging: *loki-logging
+    logging: *dbstack-logging
     expose:
       - 80
-      # depends_on:
-      # - loki
 
   watchdog:
     image: zacharlie/dbstack-watchdog
@@ -322,11 +302,9 @@ services:
     environment:
       - BASE_PATH=/uptime/
       - UPTIME_KUMA_BASE_PATH=/uptime/
-      # logging: *loki-logging
+    logging: *dbstack-logging
     expose:
       - 3001
-      # depends_on:
-      # - loki
 
   advisor:
     image: gcr.io/cadvisor/cadvisor
@@ -349,21 +327,8 @@ services:
       - ${PWD}/config/ssl/:/etc/nginx/ssl/
       - ${PWD}/config/www/:/usr/share/nginx/html/www/
       - ${PWD}/docs:/usr/share/nginx/html/www/docs/
-    # logging: *loki-logging
-    logging: *json-logging
+    logging: *dbstack-logging
     restart: always
-    # depends_on:
-    # - loki
-    # - db
-    # - pgadmin
-    # - postgrest
-    # - filebrowser
-    # - swagger
-    # - grafana
-    # - prometheus
-    # - web
-    # - tiles
-    # - monitor
     ports:
       - 80:80
       - 443:443
