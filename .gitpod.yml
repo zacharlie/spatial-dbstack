@@ -1,9 +1,9 @@
 tasks:
   - before: |
+      sudo docker-compose pull
+  - init: |
       chmod +x ./setup.sh
       sudo ./setup.sh
-  - init: |
-      sudo docker-compose pull
   - command: |
       sudo docker-compose up
 ports:
