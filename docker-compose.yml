@@ -2,10 +2,6 @@ version: '3.9'
 
 x-logging:
   &dbstack-logging
-  driver: journald
-
-x-json-logging:
-  &json-logging
   driver: json-file
   options:
     max-size: 200m
