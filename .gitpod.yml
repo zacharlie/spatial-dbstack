@@ -5,7 +5,7 @@ tasks:
       chmod +x ./setup.sh
       sudo ./setup.sh
   - command: |
-      sudo docker-compose up
+      sudo docker-compose up --no-build
 ports:
   - port: 80
     onOpen: ignore
