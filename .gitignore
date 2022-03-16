@@ -3,6 +3,9 @@
 *.ignore
 secrets/**
 !secrets/**/.gitkeep
+# exclude docker (named) volumes
+data/volumes/**
+!data/volumes/.gitkeep
 # exclude ssl certs
 config/ssl/*.key
 config/ssl/*.crt

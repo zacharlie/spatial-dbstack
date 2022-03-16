@@ -16,12 +16,42 @@ x-json-logging:
     max-file: '10'
 
 volumes:
-  log-data: null
-  postgis-data: null
-  db-backup: null
-  pg-admin-data: null
-  grafana-data: null
-  uptime-kuma-data: null
+  log-data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './data/volumes/log-data'
+  postgis-data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './data/volumes/postgis-data'
+  db-backup:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './data/volumes/db-backup'
+  pg-admin-data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './data/volumes/pg-admin-data'
+  grafana-data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './data/volumes/grafana-data'
+  uptime-kuma-data:
+    driver: local
+    driver_opts:
+      type: 'none'
+      o: 'bind'
+      device: './data/volumes/uptime-kuma-data'
 
 services:
   loki:
