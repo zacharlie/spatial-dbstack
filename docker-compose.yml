@@ -46,17 +46,6 @@ volumes:
       device: '${PWD}/data/volumes/uptime-kuma-data'
 
 services:
-  loki:
-    image: grafana/loki
-    command: -config.file=/etc/loki/local-config.yaml
-    expose:
-      - 3100
-    volumes:
-      - log-data:/var/log
-      - ${PWD}/config/loki/loki-local-config.yaml:/etc/loki/local-config.yaml
-      - ${PWD}/config/loki/rules:/loki/rules
-    logging: *dbstack-logging
-
   db:
     image: kartoza/postgis:${POSTGRES_MAJOR_VERSION}-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_RELEASE}
     # container_name: master-database
@@ -228,12 +217,24 @@ services:
     expose:
       - 3000
 
+  loki:
+    image: grafana/loki:k88-c660a7e
+    command: -config.file=/etc/loki/local-config.yaml
+    expose:
+      - 3100
+    volumes:
+      - log-data:/var/log
+      - ${PWD}/config/loki/loki-local-config.yaml:/etc/loki/local-config.yaml
+      - ${PWD}/config/loki/rules:/loki/rules
+    logging: *dbstack-logging
+
   promtail:
-    image: grafana/promtail:main
+    image: grafana/promtail:k88-c660a7e
     command: -config.file=/etc/promtail/promtail-config.yaml
     volumes:
       - log-data:/var/log
       - ${PWD}/config/prom/promtail-docker-config.yaml:/etc/promtail/promtail-config.yaml
+      - /var/lib/docker/containers:/var/lib/docker/containers
       - /var/run/docker.sock:/var/run/docker.sock
     logging: *dbstack-logging
     expose:
