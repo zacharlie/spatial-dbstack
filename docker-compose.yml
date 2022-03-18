@@ -229,11 +229,12 @@ services:
       - 3000
 
   promtail:
-    image: grafana/promtail
+    image: grafana/promtail:main
     command: -config.file=/etc/promtail/promtail-config.yaml
     volumes:
       - log-data:/var/log
       - ${PWD}/config/prom/promtail-docker-config.yaml:/etc/promtail/promtail-config.yaml
+      - /var/run/docker.sock:/var/run/docker.sock
     logging: *dbstack-logging
     expose:
       - 9080
