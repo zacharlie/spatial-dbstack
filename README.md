@@ -12,7 +12,7 @@ It's optimized for utilization with spatial data by providing spatial service AP
 
 For the most part, dbstack will be used to refer to the project, but the repo name spatial-dbstack was used to explicitly outline it's intended purpose as a spatial datastore.
 
-![dbstack-screenshot](docsrc/assets/images/screenshot.png)
+![dbstack-screenshot](mkdocs/src/assets/images/screenshot.png)
 
 ## Installation
 
