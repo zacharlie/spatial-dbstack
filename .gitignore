@@ -3,6 +3,12 @@
 *.ignore
 secrets/**
 !secrets/**/.gitkeep
+# exclude sensitive authelia data
+config/authelia/notifications.*
+config/authelia/*.db
+config/authelia/*.db*
+config/authelia/*.sqlite
+config/authelia/*.sqlite3
 # exclude docker (named) volumes
 data/volumes/**
 !data/volumes/.gitkeep

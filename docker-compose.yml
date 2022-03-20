@@ -46,6 +46,26 @@ volumes:
       device: '${PWD}/data/volumes/uptime-kuma-data'
 
 services:
+  authelia:
+    image: authelia/authelia
+    volumes:
+      - ${PWD}/config/authelia:/config
+    expose:
+      - 9091
+    ports:
+      - 9091
+    # npm:
+    #   image: jc21/nginx-proxy-manager:latest
+    #   volumes:
+    #     - ${PWD}/config/npm/npm-config.json:/app/config/production.json
+    #   expose:
+    #     - 80
+    #     - 81
+    #     - 443
+    # healthcheck:
+    #   test: [ "CMD", "/bin/check-health" ]
+    #   interval: 10s
+    #   timeout: 3s
   db:
     image: kartoza/postgis:${POSTGRES_MAJOR_VERSION}-${POSTGIS_MAJOR_VERSION}.${POSTGIS_MINOR_RELEASE}
     # container_name: master-database
@@ -163,7 +183,7 @@ services:
     image: swaggerapi/swagger-ui
     environment:
       - API_URL=${SERVER_URL}/rest/
-      - BASE_URL=/api
+      - BASE_URL=/swagger
     logging: *dbstack-logging
     expose:
       - 8080
@@ -171,7 +191,7 @@ services:
       - db
       - postgrest
 
-  web:
+  features:
     image: pramsey/pg_featureserv
     command: --config /etc/pg_featureserv.toml
     volumes:

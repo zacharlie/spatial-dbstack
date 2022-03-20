@@ -1,0 +1,12 @@
+{
+    "database": {
+        "engine": "knex-native",
+        "knex": {
+            "client": "sqlite3",
+            "connection": {
+                "filename": "/data/nginxpm.db"
+            },
+            "useNullAsDefault": true
+        }
+    }
+}
