@@ -335,14 +335,24 @@ services:
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
 
+  static:
+    image: nginx
+    volumes:
+      - ${PWD}/config/nginx/static:/etc/nginx/conf.d/static:ro
+      - ${PWD}/config/www/home:/usr/share/nginx/html/dashboard:ro
+      - ${PWD}/config/www/web:/usr/share/nginx/html/content:ro
+      - ${PWD}/docs/:/usr/share/nginx/html/docs/:ro
+    logging: *dbstack-logging
+    restart: always
+    expose:
+      - 80
+
   nginx:
     image: nginx
     volumes:
       - ${PWD}/config/nginx/sites-enabled:/etc/nginx/conf.d:ro
       - ${PWD}/config/nginx/webusers:/etc/nginx/.htpasswd:ro
       - ${PWD}/config/ssl/:/etc/nginx/ssl/
-      - ${PWD}/config/www/:/usr/share/nginx/html/www/
-      - ${PWD}/docs:/usr/share/nginx/html/www/docs/
     logging: *dbstack-logging
     restart: always
     ports:
