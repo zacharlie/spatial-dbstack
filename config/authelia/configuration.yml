@@ -4,7 +4,7 @@
 ###############################################################
 
 jwt_secret: a_very_important_secret
-default_redirection_url: https://127.0.0.1/home
+default_redirection_url: https://127.0.0.1/dashboard
 
 server:
   host: 0.0.0.0
@@ -44,15 +44,15 @@ session:
   name: authelia_session
   # This secret can also be set using the env variables AUTHELIA_SESSION_SECRET_FILE
   secret: unsecure_session_secret
-  expiration: 3600  # 1 hour
-  inactivity: 300  # 5 minutes
-  domain: 127.0.0.1  # Should match whatever your root protected domain is
+  expiration: 3600 # 1 hour
+  inactivity: 300 # 5 minutes
+  domain: 127.0.0.1 # Should match whatever your root protected domain is
 
   # redis:
   #   host: redis
   #   port: 6379
-    # This secret can also be set using the env variables AUTHELIA_SESSION_REDIS_PASSWORD_FILE
-    # password: authelia
+  # This secret can also be set using the env variables AUTHELIA_SESSION_REDIS_PASSWORD_FILE
+  # password: authelia
 
 regulation:
   max_retries: 3
@@ -68,7 +68,6 @@ notifier:
   disable_startup_check: false
   filesystem:
     filename: /config/notifications.txt
-
 # notifier:
 #   smtp:
 #     username: test
@@ -77,4 +76,3 @@ notifier:
 #     host: mail.example.com
 #     port: 25
 #     sender: admin@example.com
-...
