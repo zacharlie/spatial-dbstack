@@ -1,6 +1,6 @@
 tasks:
   - before: |
-      export PWD=$(pwd) && sudo docker-compose pull
+      sudo docker-compose pull
   - init: |
       chmod +x ./setup.sh
       sudo ./setup.sh
